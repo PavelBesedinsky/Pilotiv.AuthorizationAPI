@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Pilotiv.AuthorizationAPI.Application.Requests.Tokens.Commands.ObtainVkToken;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Controllers;
 
@@ -19,9 +20,18 @@ public class AuthController : ApiControllerBase
     /// <summary>
     /// Получение токена.
     /// </summary>
+    /// <param name="command">Команда получения токена VK.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
     [HttpPost("token")]
-    public async Task ObtainTokenAsync()
+    public async Task<ActionResult> ObtainTokenAsync([FromBody] ObtainVkTokenCommand command,
+        CancellationToken cancellationToken = default)
     {
-        return;
+        var commandResult = await Mediator.Send(command, cancellationToken);
+        if (commandResult.IsFailed)
+        {
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+
+        return Ok();
     }
 }
