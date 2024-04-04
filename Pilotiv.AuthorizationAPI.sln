@@ -8,6 +8,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilotiv.AuthorizationAPI.Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilotiv.AuthorizationAPI.Infrastructure", "Pilotiv.AuthorizationAPI.Infrastructure\Pilotiv.AuthorizationAPI.Infrastructure.csproj", "{AAB6A5DF-C407-4640-8C16-75A642304A8B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker-compose", "docker-compose", "{EAE343E7-547E-4452-A693-F065778F6492}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+		.dockerignore = .dockerignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

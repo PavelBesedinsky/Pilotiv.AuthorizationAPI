@@ -1,0 +1,22 @@
+﻿services:
+  pilotiv.authorizationapi.webui:
+    container_name: pilotiv_authorizationapi_webui
+    image: ghcr.io/pavelbesedinsky/auth.pilotiv:latest
+    build:
+      context: .
+      dockerfile: Pilotiv.AuthorizationAPI.WebUI/Dockerfile
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+
+  pilotiv.authorizationapi.db:
+    container_name: pilotiv_authorizationapi_db
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=pilotiv_authorizationapi_db
+    volumes:
+      - ./.containers/pilotiv_authorizationapi_db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

@@ -21,10 +21,4 @@
       <ProjectReference Include="..\Pilotiv.AuthorizationAPI.Infrastructure\Pilotiv.AuthorizationAPI.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
 </Project>

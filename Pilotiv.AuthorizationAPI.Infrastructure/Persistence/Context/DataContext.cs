@@ -38,7 +38,7 @@ public class DataContext
     private IDbConnection CreateConnection()
     {
         var connectionString =
-            $"Host={_dbSettingsOptions.Server}; Database={_dbSettingsOptions.Database}; Username={_dbSettingsOptions.UserId}; Password={_dbSettingsOptions.Password};";
+            $"Host={_dbSettingsOptions.Host};Port={_dbSettingsOptions.Port};Database={_dbSettingsOptions.Database}; Username={_dbSettingsOptions.UserId}; Password={_dbSettingsOptions.Password};";
         return new NpgsqlConnection(connectionString);
     }
 
@@ -64,7 +64,7 @@ public class DataContext
     private async Task InitDatabaseAsync()
     {
         var connectionString =
-            $"Host={_dbSettingsOptions.Server}; Database=postgres; Username={_dbSettingsOptions.UserId}; Password={_dbSettingsOptions.Password};";
+            $"Host={_dbSettingsOptions.Host};Port={_dbSettingsOptions.Port};Database=postgres; Username={_dbSettingsOptions.UserId}; Password={_dbSettingsOptions.Password};";
         await using var connection = new NpgsqlConnection(connectionString);
         
         // create database if it doesn't exist
