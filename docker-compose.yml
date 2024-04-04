@@ -8,6 +8,8 @@
     ports:
       - "5000:5000"
       - "5001:5001"
+    depends_on:
+      - pilotiv.authorizationapi.db
 
   pilotiv.authorizationapi.db:
     container_name: pilotiv_authorizationapi_db
