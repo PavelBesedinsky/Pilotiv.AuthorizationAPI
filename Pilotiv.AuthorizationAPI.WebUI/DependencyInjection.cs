@@ -19,6 +19,8 @@ public static class DependencyInjection
 
         services.AddOpenApiDocument(OpenApiSettings.OpenApiDocument);
 
+        services.AddScoped<SwaggerAuthorizeMiddleware>();
+        
         return services;
     }
 }

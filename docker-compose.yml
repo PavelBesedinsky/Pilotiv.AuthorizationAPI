@@ -5,9 +5,11 @@
     build:
       context: .
       dockerfile: Pilotiv.AuthorizationAPI.WebUI/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Container
+      - ASPNETCORE_HTTP_PORTS=5000
     ports:
       - "5000:5000"
-      - "5001:5001"
     depends_on:
       - pilotiv.authorizationapi.db
 

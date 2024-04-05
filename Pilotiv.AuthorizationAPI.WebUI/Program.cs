@@ -19,6 +19,6 @@ var logger = app.Services.GetService<ILogger<Program>>();
 
 logger?.LogInformation("Environment: {EnvironmentName}", builder.Environment.EnvironmentName);
 
-app.UseWebApplicationExtension();
+app.ConfigureWebApplication();
 
 app.Run();
