@@ -1,4 +1,5 @@
-﻿using Pilotiv.AuthorizationAPI.WebUI.Settings;
+﻿using Pilotiv.AuthorizationAPI.WebUI.Middlewares;
+using Pilotiv.AuthorizationAPI.WebUI.Settings;
 using Serilog;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Extensions;
@@ -15,6 +16,8 @@ public static class WebApplicationExtensions
     /// <returns><see cref="WebApplication"/>.</returns>
     public static WebApplication ConfigureWebApplication(this WebApplication webApplication)
     {
+        webApplication.UseMiddleware<WebRootRedirectMiddleware>();
+        
         if (webApplication.Environment.IsDevelopment())
         {
             webApplication.UseOpenApi();
@@ -33,6 +36,7 @@ public static class WebApplicationExtensions
         webApplication.UseSerilogRequestLogging();
         webApplication.MapControllers();
 
+        webApplication.UseStaticFiles();
         
         webApplication.Lifetime.ApplicationStarted.Register(OnApplicationStarted, webApplication.Services);
 

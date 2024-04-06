@@ -5,5 +5,13 @@
 /// </summary>
 public class ObtainVkTokenCommandResponse
 {
-    
+    /// <summary>
+    /// Токен доступа.
+    /// </summary>
+    public string? AccessToken { get; init; }
+
+    /// <summary>
+    /// Признак, что пользователь добавлен в систему (после первого входа).
+    /// </summary>
+    public bool IsNew { get; init; }
 }

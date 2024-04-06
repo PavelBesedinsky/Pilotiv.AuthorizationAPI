@@ -3,9 +3,11 @@ using FluentMigrator.Runner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 using Pilotiv.AuthorizationAPI.Infrastructure.Options;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Context;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
+using Pilotiv.AuthorizationAPI.Infrastructure.Services;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure;
 
@@ -23,9 +25,11 @@ public static class DependencyInjection
     {
         var services = builder.Services;
 
+        services.AddScoped<IOAuthVkProvider, OAuthVkProvider>();
+
         services.AddSingleton<DbContext>();
         services.AddSingleton<DbMigration>();
-
+        
         services
             .AddFluentMigratorCore()
             .ConfigureRunner(configure => configure
@@ -39,6 +43,10 @@ public static class DependencyInjection
         return builder;
     }
 
+    /// <summary>
+    /// Получение строки соединения с базой данных.
+    /// </summary>
+    /// <param name="configuration">Конфигурация.</param>
     private static string GetConnectionString(IConfiguration configuration)
     {
         var section = configuration.GetSection(nameof(DbSettingsOptions.DbSettings));
@@ -52,6 +60,9 @@ public static class DependencyInjection
         return $"Host={host};Port={port};Database={database}; Username={userId}; Password={password};";
     }
 
+    /// <summary>
+    /// Получение значения раздела конфигурации.
+    /// </summary>
     private static string GetValueOfSection(this IConfigurationSection section, string key)
     {
         return section.GetSection(key).Value ?? string.Empty;

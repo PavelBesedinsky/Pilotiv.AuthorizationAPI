@@ -23,7 +23,7 @@ public class AuthController : ApiControllerBase
     /// <param name="command">Команда получения токена VK.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     [HttpPost("token")]
-    public async Task<ActionResult> ObtainTokenAsync([FromBody] ObtainVkTokenCommand command,
+    public async Task<ActionResult> ObtainVkTokenAsync([FromBody] ObtainVkTokenCommand command,
         CancellationToken cancellationToken = default)
     {
         var commandResult = await Mediator.Send(command, cancellationToken);

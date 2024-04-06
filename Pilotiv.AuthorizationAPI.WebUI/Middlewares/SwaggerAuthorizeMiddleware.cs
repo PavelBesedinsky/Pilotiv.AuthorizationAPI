@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 
-namespace Pilotiv.AuthorizationAPI.WebUI;
+namespace Pilotiv.AuthorizationAPI.WebUI.Middlewares;
 
 /// <summary>
 /// Компонент Middleware авторизация Swagger.

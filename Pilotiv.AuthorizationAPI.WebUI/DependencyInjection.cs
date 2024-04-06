@@ -1,4 +1,5 @@
-﻿using Pilotiv.AuthorizationAPI.WebUI.Settings;
+﻿using Pilotiv.AuthorizationAPI.WebUI.Middlewares;
+using Pilotiv.AuthorizationAPI.WebUI.Settings;
 
 namespace Pilotiv.AuthorizationAPI.WebUI;
 
@@ -21,6 +22,7 @@ public static class DependencyInjection
 
         services.AddOpenApiDocument(OpenApiSettings.OpenApiDocument);
 
+        services.AddScoped<WebRootRedirectMiddleware>();
         services.AddScoped<SwaggerAuthorizeMiddleware>();
         
         return builder;

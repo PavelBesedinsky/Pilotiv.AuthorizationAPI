@@ -1,10 +1,19 @@
+using System.Diagnostics;
 using Pilotiv.AuthorizationAPI.Application;
 using Pilotiv.AuthorizationAPI.Infrastructure;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Extensions;
 using Pilotiv.AuthorizationAPI.WebUI;
 using Pilotiv.AuthorizationAPI.WebUI.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
+var exePath = Process.GetCurrentProcess().MainModule?.FileName;
+var rootPath = Path.GetDirectoryName(exePath) ?? string.Empty;
+var webRootPath = Path.Combine(rootPath, "wwwroot");
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    WebRootPath = webRootPath
+});
 
 builder.Host.UseHostExtensions();
 
