@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Pilotiv.AuthorizationAPI.Application;
 
@@ -11,13 +12,13 @@ public static class DependencyInjection
     /// <summary>
     /// Добавление зависимостей слоя "Приложение"
     /// </summary>
-    /// <param name="services">Коллекция сервисов</param>
-    /// <returns>Коллекция сервисов</returns>
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    /// <param name="builder">Констуктор приложения.</param>
+    /// <returns>Конструктор приложения.</returns>
+    public static IHostApplicationBuilder AddApplication(this IHostApplicationBuilder builder)
     {
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         // services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
 
-        return services;
+        return builder;
     }
 }

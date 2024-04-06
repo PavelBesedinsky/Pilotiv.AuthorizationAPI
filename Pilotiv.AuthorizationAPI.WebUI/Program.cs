@@ -1,16 +1,16 @@
 using Pilotiv.AuthorizationAPI.Application;
 using Pilotiv.AuthorizationAPI.Infrastructure;
+using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Extensions;
 using Pilotiv.AuthorizationAPI.WebUI;
 using Pilotiv.AuthorizationAPI.WebUI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Host.UseHostExtensions();
 
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
-builder.Services.AddPresentation();
+builder.AddApplication();
+builder.AddInfrastructure();
+builder.AddPresentation();
 builder.Services.ConfigureOptions(builder);
 
 var app = builder.Build();
@@ -21,4 +21,6 @@ logger?.LogInformation("Environment: {EnvironmentName}", builder.Environment.Env
 
 app.ConfigureWebApplication();
 
-app.Run();
+app
+    .MigrateDb(logger)
+    .Run();

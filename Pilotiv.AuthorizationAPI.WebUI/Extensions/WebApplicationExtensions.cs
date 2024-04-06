@@ -1,5 +1,4 @@
-﻿using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Context;
-using Pilotiv.AuthorizationAPI.WebUI.Settings;
+﻿using Pilotiv.AuthorizationAPI.WebUI.Settings;
 using Serilog;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Extensions;
@@ -46,14 +45,5 @@ public static class WebApplicationExtensions
         {
             return;
         }
-
-        await InitDataBaseAsync(serviceProvider);
-    }
-
-
-    private static Task InitDataBaseAsync(IServiceProvider serviceProvider)
-    {
-        var context = serviceProvider.GetRequiredService<DataContext>();
-        return context.InitAsync();
     }
 }

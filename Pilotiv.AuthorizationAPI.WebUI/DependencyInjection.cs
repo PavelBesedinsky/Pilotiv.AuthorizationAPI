@@ -10,10 +10,12 @@ public static class DependencyInjection
     /// <summary>
     /// Добавление зависимостей слоя "Приложение"
     /// </summary>
-    /// <param name="services">Коллекция сервисов</param>
-    /// <returns>Коллекция сервисов</returns>
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    /// <param name="builder">Констуктор приложения.</param>
+    /// <returns>Конструктор приложения.</returns>
+    public static IHostApplicationBuilder AddPresentation(this IHostApplicationBuilder builder)
     {
+        var services = builder.Services;
+        
         services.AddControllers();
         services.AddEndpointsApiExplorer();
 
@@ -21,6 +23,6 @@ public static class DependencyInjection
 
         services.AddScoped<SwaggerAuthorizeMiddleware>();
         
-        return services;
+        return builder;
     }
 }
