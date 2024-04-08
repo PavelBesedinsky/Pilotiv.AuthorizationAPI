@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 
 namespace Pilotiv.AuthorizationAPI.Application;
 
