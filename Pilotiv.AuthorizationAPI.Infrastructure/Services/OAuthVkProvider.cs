@@ -1,8 +1,6 @@
-﻿using System.Net.Http.Json;
-using System.Net.Security;
+﻿using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 using Pilotiv.AuthorizationAPI.Application.Shared.Dtos;
@@ -74,19 +72,19 @@ public class OAuthVkProvider : IOAuthVkProvider, IDisposable
                     cancellationToken);
             if (deserializedErrorModel is null)
             {
-                return Result.Fail(OAuthVkProviderErrors.FailedToDeserializeError());
+                return OAuthVkProviderErrors.FailedToDeserializeError();
             }
 
-            return Result.Fail(OAuthVkProviderErrors.FailedToGetAccessToken(deserializedErrorModel.Error_Description ??
-                                                                            "empty error description"));
+            return OAuthVkProviderErrors.FailedToGetAccessToken(deserializedErrorModel.Error_Description ??
+                                                                "empty error description");
         }
-        
+
         var deserializedModel =
             await JsonSerializer.DeserializeAsync<VkAccessTokenPayload>(responseStream, _jsonSerializerOptions,
                 cancellationToken);
         if (deserializedModel is null)
         {
-            return Result.Fail(OAuthVkProviderErrors.FailedToDeserializeResponse());
+            return OAuthVkProviderErrors.FailedToDeserializeResponse();
         }
 
         return deserializedModel;
