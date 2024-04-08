@@ -1,9 +1,10 @@
-﻿using Pilotiv.AuthorizationAPI.Domain.Primitives;
+﻿using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
+using Pilotiv.AuthorizationAPI.Domain.Primitives;
 
 namespace Pilotiv.AuthorizationAPI.Domain.Models.Users.Events;
 
 /// <summary>
 /// Событие создания пользователя.
 /// </summary>
-/// <param name="User">Созданный пользователь.</param>
-public record UserCreatedDomainEvent(User User) : IDomainEvent;
+/// <param name="UserId">Идентификатор созданного пользователя.</param>
+public record UserCreatedDomainEvent(UserId UserId) : IDomainEvent;

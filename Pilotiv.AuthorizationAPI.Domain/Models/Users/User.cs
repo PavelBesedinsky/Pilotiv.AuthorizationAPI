@@ -72,7 +72,7 @@ public class User : AggregateRoot<UserId, Guid>
     {
         var user = new User(email, registrationDate, authorizationDate, login);
 
-        user.AddDomainEvent(new UserCreatedDomainEvent(user));
+        user.AddDomainEvent(new UserCreatedDomainEvent(user.Id));
         user.AddDomainEvent(new UserEmailChangedDomainEvent(user.Id, email));
         user.AddDomainEvent(new UserRegistrationDateChangedDomainEvent(user.Id, registrationDate));
         user.AddDomainEvent(new UserAuthorizationDateChanged(user.Id, authorizationDate));
