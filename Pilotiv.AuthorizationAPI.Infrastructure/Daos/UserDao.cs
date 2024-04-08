@@ -1,7 +1,7 @@
 ﻿namespace Pilotiv.AuthorizationAPI.Infrastructure.Daos;
 
 /// <summary>
-/// Объек доступа данных пользователя.
+/// Объект доступа данных пользователя.
 /// </summary>
 public class UserDao
 {
@@ -14,7 +14,22 @@ public class UserDao
     /// Электронный адрес пользователя.
     /// </summary>
     public string? Email { get; set; }
+
+    /// <summary>
+    /// Логин пользователя.
+    /// </summary>
+    public string? Login { get; set; }
     
+    /// <summary>
+    /// Дата регистрации пользователя.
+    /// </summary>
+    public DateTime RegistrationDate { get; set; }
+    
+    /// <summary>
+    /// Дата авторизации пользователя.
+    /// </summary>
+    public DateTime AuthorizationDate { get; set; }
+
     /// <summary>
     /// Получение признака, что пользователь является пользователем VK.
     /// </summary>
