@@ -14,4 +14,9 @@ public class ObtainVkTokenCommandResponse
     /// Признак, что пользователь добавлен в систему (после первого входа).
     /// </summary>
     public bool IsNew { get; init; }
+
+    /// <summary>
+    /// Признак, что электронный адрес не указан.
+    /// </summary>
+    public bool IsEmailEmpty { get; init; }
 }

@@ -58,7 +58,7 @@ public class OAuthVkProvider : IOAuthVkProvider, IDisposable
     }
 
     /// <inheritdoc />
-    public async Task<Result<VkAccessToken>> GetAccessTokenAsync(string clientId, string clientSecret,
+    public async Task<Result<VkAccessTokenPayload>> GetAccessTokenAsync(string clientId, string clientSecret,
         string redirectUri, string code,
         CancellationToken cancellationToken)
     {
@@ -80,10 +80,9 @@ public class OAuthVkProvider : IOAuthVkProvider, IDisposable
             return Result.Fail(OAuthVkProviderErrors.FailedToGetAccessToken(deserializedErrorModel.Error_Description ??
                                                                             "empty error description"));
         }
-
-
+        
         var deserializedModel =
-            await JsonSerializer.DeserializeAsync<VkAccessToken>(responseStream, _jsonSerializerOptions,
+            await JsonSerializer.DeserializeAsync<VkAccessTokenPayload>(responseStream, _jsonSerializerOptions,
                 cancellationToken);
         if (deserializedModel is null)
         {

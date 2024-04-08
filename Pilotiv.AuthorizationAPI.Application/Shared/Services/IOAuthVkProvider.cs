@@ -17,6 +17,6 @@ public interface IOAuthVkProvider
     /// <param name="code">Временный код, полученный после прохождения авторизации.</param>
     /// <param name="cancellationToken"></param>
     /// <returns>Модель ответа от сервера авторизации VK в формате JSON.</returns>
-    public Task<Result<VkAccessToken>> GetAccessTokenAsync(string clientId, string clientSecret, string redirectUri, string code,
+    public Task<Result<VkAccessTokenPayload>> GetAccessTokenAsync(string clientId, string clientSecret, string redirectUri, string code,
         CancellationToken cancellationToken = default);
 }

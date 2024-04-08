@@ -3,7 +3,7 @@
 /// <summary>
 /// Объект переноса данных токена доступа VK.
 /// </summary>
-public class VkAccessToken
+public class VkAccessTokenPayload
 {
     /// <summary>
     /// Токен доступа.
@@ -22,4 +22,9 @@ public class VkAccessToken
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public int User_ID { get; init; }
+
+    /// <summary>
+    /// Электронный адрес пользователя.
+    /// </summary>
+    public string? Email { get; init; }
 }

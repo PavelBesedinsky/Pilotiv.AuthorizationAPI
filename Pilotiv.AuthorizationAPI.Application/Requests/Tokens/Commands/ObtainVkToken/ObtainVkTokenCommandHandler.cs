@@ -58,17 +58,20 @@ public class ObtainVkTokenCommandHandler : IRequestHandler<ObtainVkTokenCommand,
             return Result.Fail(ObtainVkTokenErrors.RedirectUriIsNullOrEmpty());
         }
 
-        var getAccessTokenResult = await _oAuthVkProvider.GetAccessTokenAsync(_oAuthVkCredentials.ClientId,
+        var getAccessTokenPayloadResult = await _oAuthVkProvider.GetAccessTokenAsync(_oAuthVkCredentials.ClientId,
             _oAuthVkCredentials.ClientSecret, _oAuthVkCredentials.RedirectUri, code, cancellationToken);
-        if (getAccessTokenResult.IsFailed)
+        if (getAccessTokenPayloadResult.IsFailed)
         {
-            return Result.Fail(getAccessTokenResult.Errors);
+            return Result.Fail(getAccessTokenPayloadResult.Errors);
         }
 
+        var accessTokenPayload = getAccessTokenPayloadResult.Value;
+        
         return new ObtainVkTokenCommandResponse
         {
-            AccessToken = getAccessTokenResult.Value.Access_Token,
-            IsNew = true
+            AccessToken = getAccessTokenPayloadResult.Value.Access_Token,
+            IsNew = true,
+            IsEmailEmpty = string.IsNullOrWhiteSpace(accessTokenPayload.Email),
         };
     }
 }
