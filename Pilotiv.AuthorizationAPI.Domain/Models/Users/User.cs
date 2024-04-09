@@ -106,7 +106,7 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="vkUser">Пользователь VK.</param>
     /// <returns>Пользователь.</returns>
     public static Result<User> Restore(UserId userId, UserEmail email, UserRegistrationDate registrationDate,
-        UserAuthorizationDate authorizationDate, UserLogin login, VkUser vkUser)
+        UserAuthorizationDate authorizationDate, UserLogin login, VkUser? vkUser)
     {
         return new User(userId, email, registrationDate, authorizationDate, login, vkUser);
     }
