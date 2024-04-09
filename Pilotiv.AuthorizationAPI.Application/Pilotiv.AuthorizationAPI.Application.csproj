@@ -34,5 +34,9 @@
         <DependentUpon>Resources.resx</DependentUpon>
       </Compile>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Shared\Persistence\Repositories\" />
+    </ItemGroup>
 
 </Project>

@@ -7,5 +7,5 @@ namespace Pilotiv.AuthorizationAPI.Domain.Models.Users.Events;
 /// Событие изменения логина пользователя.
 /// </summary>
 /// <param name="UserId">Идентификатор пользователя.</param>
-/// <param name="UserLogin">Логин пользователя.</param>
-public record UserLoginChangedDomainEvent(UserId UserId, UserLogin UserLogin) : IDomainEvent;
+/// <param name="Login">Логин пользователя.</param>
+public record UserLoginChangedDomainEvent(UserId UserId, UserLogin Login) : IDomainEvent;

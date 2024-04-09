@@ -1,6 +1,6 @@
 ﻿using Pilotiv.AuthorizationAPI.Domain.Primitives;
 
-namespace Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Commands;
+namespace Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
 
 /// <summary>
 /// Интерфейс единицы работы.

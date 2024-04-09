@@ -2,7 +2,7 @@
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
 
-namespace Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Queries;
+namespace Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
 
 /// <summary>
 /// Интерфейс репозитория запросов доменной модели <see cref="User"/>. 
