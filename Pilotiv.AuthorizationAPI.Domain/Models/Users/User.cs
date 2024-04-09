@@ -14,7 +14,7 @@ public class User : AggregateRoot<UserId, Guid>
     /// <summary>
     /// Адрес электронной почты пользователя.
     /// </summary>
-    public UserEmail? Email { get; }
+    public UserEmail Email { get; }
 
     /// <summary>
     /// Логин пользователя.
