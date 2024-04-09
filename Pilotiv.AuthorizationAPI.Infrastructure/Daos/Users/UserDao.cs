@@ -1,4 +1,4 @@
-﻿namespace Pilotiv.AuthorizationAPI.Infrastructure.Daos;
+﻿namespace Pilotiv.AuthorizationAPI.Infrastructure.Daos.Users;
 
 /// <summary>
 /// Объект доступа данных пользователя.
@@ -19,24 +19,19 @@ public class UserDao
     /// Логин пользователя.
     /// </summary>
     public string? Login { get; set; }
-    
+
     /// <summary>
     /// Дата регистрации пользователя.
     /// </summary>
     public DateTime RegistrationDate { get; set; }
-    
+
     /// <summary>
     /// Дата авторизации пользователя.
     /// </summary>
     public DateTime AuthorizationDate { get; set; }
 
     /// <summary>
-    /// Получение признака, что пользователь является пользователем VK.
+    /// Объект доступа данных пользователя VK.
     /// </summary>
-    public bool IsVkUser => VkUserId is not null;
-
-    /// <summary>
-    /// Идентификатор пользователя VK.
-    /// </summary>
-    public Guid? VkUserId { get; set; }
+    public VkUserDao? VkUser { get; set; }
 }

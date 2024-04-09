@@ -1,4 +1,4 @@
-﻿namespace Pilotiv.AuthorizationAPI.Infrastructure.Daos;
+﻿namespace Pilotiv.AuthorizationAPI.Infrastructure.Daos.Users;
 
 /// <summary>
 /// Объект доступа данных пользователя VK.
@@ -13,10 +13,5 @@ public class VkUserDao
     /// <summary>
     /// Внутренний идентификатор пользователя в VK.
     /// </summary>
-    public int VkUserId { get; set; }
-
-    /// <summary>
-    /// Идентификатор пользователя сервиса.
-    /// </summary>
-    public Guid UserId { get; init; }
+    public string? InternalUserId { get; set; }
 }
