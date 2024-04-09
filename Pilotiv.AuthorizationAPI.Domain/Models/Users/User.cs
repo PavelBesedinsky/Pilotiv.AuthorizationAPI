@@ -86,6 +86,7 @@ public class User : AggregateRoot<UserId, Guid>
         user.AddDomainEvent(new UserEmailChangedDomainEvent(user.Id, email));
         user.AddDomainEvent(new UserRegistrationDateChangedDomainEvent(user.Id, registrationDate));
         user.AddDomainEvent(new UserAuthorizationDateChanged(user.Id, authorizationDate));
+        user.AddDomainEvent(new UserLoginChangedDomainEvent(user.Id, login));
         if (vkUser is not null)
         {
             user.AddDomainEvent(new UserVkUserChangedDomainEvent(user.Id, vkUser));    
