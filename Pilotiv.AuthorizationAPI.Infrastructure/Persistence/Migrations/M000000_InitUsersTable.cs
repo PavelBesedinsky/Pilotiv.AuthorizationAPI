@@ -11,8 +11,9 @@ public class M000000_InitUsersTable : AutoReversingMigration
         Create
             .Table("Users")
             .WithColumn("Id").AsGuid().NotNullable().PrimaryKey()
-            .WithColumn("Email").AsString(255).NotNullable()
             .WithColumn("Login").AsString(255).NotNullable()
+            .WithColumn("PasswordHash").AsString(255).Nullable()
+            .WithColumn("Email").AsString(255).NotNullable()
             .WithColumn("RegistrationDate").AsDateTime().NotNullable()
             .WithColumn("AuthorizationDate").AsDateTime().NotNullable()
             .WithColumn("VkUserId").AsGuid().Nullable();

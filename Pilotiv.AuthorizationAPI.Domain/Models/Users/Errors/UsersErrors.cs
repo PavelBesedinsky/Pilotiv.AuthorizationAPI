@@ -4,6 +4,7 @@ namespace Pilotiv.AuthorizationAPI.Domain.Models.Users.Errors;
 
 public static class UsersErrors
 {
+    public static Error UserPasswordHashIsNullOrEmpty => new("Не задан хэш-пароля пользователя");
     public static Error UserEmailIsNullOrEmpty() => new("Электронный адрес почты пользователя не задан.");
     public static Error InvalidUserEmail() => new("Электронный адрес почты не удолетворяет параметрам.");
     public static Error UserLoginIsNullOrEmpty() => new("Логин пользователя не задан.");

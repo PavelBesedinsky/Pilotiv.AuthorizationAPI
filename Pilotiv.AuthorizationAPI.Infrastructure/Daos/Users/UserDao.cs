@@ -11,14 +11,19 @@ public class UserDao
     public Guid Id { get; set; }
 
     /// <summary>
+    /// Хэш-пароля пользователя.
+    /// </summary>
+    public string? PasswordHash { get; set; }
+
+    /// <summary>
     /// Электронный адрес пользователя.
     /// </summary>
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
     /// <summary>
     /// Логин пользователя.
     /// </summary>
-    public string? Login { get; set; }
+    public string Login { get; set; } = null!;
 
     /// <summary>
     /// Дата регистрации пользователя.

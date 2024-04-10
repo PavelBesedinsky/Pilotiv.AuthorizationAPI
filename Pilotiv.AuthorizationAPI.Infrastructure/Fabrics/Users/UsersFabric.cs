@@ -28,8 +28,21 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
     {
         List<IError> errors = new();
 
+        // Получение хэша-пароля пользователя.
+        UserPasswordHash? passwordHash = null;
+        if (!string.IsNullOrWhiteSpace(_userDao.PasswordHash))
+        {
+            var getPasswordHashResult = UserPasswordHash.Create(_userDao.PasswordHash);
+            if (getPasswordHashResult.IsFailed)
+            {
+                errors.AddRange(getPasswordHashResult.Errors);
+            }
+
+            passwordHash = getPasswordHashResult.ValueOrDefault;
+        }
+
         // Получение адреса электронной почты пользователя.
-        var getUserEmailResult = UserEmail.Create(_userDao.Email ?? string.Empty);
+        var getUserEmailResult = UserEmail.Create(_userDao.Email);
         if (getUserEmailResult.IsFailed)
         {
             errors.AddRange(getUserEmailResult.Errors);
@@ -56,7 +69,7 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
         var authorizationDate = getUserAuthorizationDate.ValueOrDefault;
 
         // Получение логина пользователя.
-        var getUserLoginResult = UserLogin.Create(_userDao.Login ?? string.Empty);
+        var getUserLoginResult = UserLogin.Create(_userDao.Login);
         if (getUserLoginResult.IsFailed)
         {
             errors.AddRange(getUserAuthorizationDate.Errors);
@@ -82,7 +95,7 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
             return Result.Fail(errors);
         }
 
-        return User.Create(email, registrationDate, authorizationDate, login, vkUser);
+        return User.Create(passwordHash, email, registrationDate, authorizationDate, login, vkUser);
     }
 
     /// <inheritdoc />
@@ -90,8 +103,21 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
     {
         List<IError> errors = new();
 
+        // Получение хэша-пароля пользователя.
+        UserPasswordHash? passwordHash = null;
+        if (!string.IsNullOrWhiteSpace(_userDao.PasswordHash))
+        {
+            var getPasswordHashResult = UserPasswordHash.Create(_userDao.PasswordHash);
+            if (getPasswordHashResult.IsFailed)
+            {
+                errors.AddRange(getPasswordHashResult.Errors);
+            }
+
+            passwordHash = getPasswordHashResult.ValueOrDefault;
+        }
+
         // Получение адреса электронной почты пользователя.
-        var getUserEmailResult = UserEmail.Create(_userDao.Email ?? string.Empty);
+        var getUserEmailResult = UserEmail.Create(_userDao.Email);
         if (getUserEmailResult.IsFailed)
         {
             errors.AddRange(getUserEmailResult.Errors);
@@ -118,7 +144,7 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
         var authorizationDate = getUserAuthorizationDate.ValueOrDefault;
 
         // Получение логина пользователя.
-        var getUserLoginResult = UserLogin.Create(_userDao.Login ?? string.Empty);
+        var getUserLoginResult = UserLogin.Create(_userDao.Login);
         if (getUserLoginResult.IsFailed)
         {
             errors.AddRange(getUserAuthorizationDate.Errors);
@@ -144,7 +170,7 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
             return Result.Fail(errors);
         }
 
-        return User.Restore(UserId.Create(id), email, registrationDate, authorizationDate, login, vkUser);
+        return User.Restore(UserId.Create(id), passwordHash, email, registrationDate, authorizationDate, login, vkUser);
     }
 
     /// <summary>
