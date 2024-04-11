@@ -2,7 +2,6 @@
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.Entities;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
-using Pilotiv.AuthorizationAPI.Domain.Primitives;
 using Pilotiv.AuthorizationAPI.Infrastructure.Daos.Users;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Fabrics.Users;
@@ -10,7 +9,7 @@ namespace Pilotiv.AuthorizationAPI.Infrastructure.Fabrics.Users;
 /// <summary>
 /// Фабрика пользователей.
 /// </summary>
-public class UsersFabric : AggregateFabric<User, UserId, Guid>
+public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 {
     private readonly UserDao _userDao;
 
@@ -24,7 +23,7 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
     }
 
     /// <inheritdoc />
-    public override Result<User> Create()
+    public Result<User> Create()
     {
         List<IError> errors = new();
 
@@ -99,7 +98,7 @@ public class UsersFabric : AggregateFabric<User, UserId, Guid>
     }
 
     /// <inheritdoc />
-    public override Result<User> Restore(Guid id)
+    public Result<User> Restore(Guid id)
     {
         List<IError> errors = new();
 
