@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using Pilotiv.AuthorizationAPI.Domain.Primitives;
 
-namespace Pilotiv.AuthorizationAPI.Infrastructure.Fabrics;
+namespace Pilotiv.AuthorizationAPI.Application.Shared.Fabrics;
 
 /// <summary>
 /// Фабрика агрегатов.

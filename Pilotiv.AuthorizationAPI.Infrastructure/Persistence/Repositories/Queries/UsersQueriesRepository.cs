@@ -1,10 +1,10 @@
 ﻿using Dapper;
 using FluentResults;
+using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
 using Pilotiv.AuthorizationAPI.Infrastructure.Daos.Users;
-using Pilotiv.AuthorizationAPI.Infrastructure.Fabrics.Users;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Context;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Repositories.Queries;
@@ -30,14 +30,28 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     {
         using var connection = _dbContext.CreateOpenedConnection();
         const string sql = @"SELECT * From Users WHERE Login = @Login";
-        
+
         var userDao = await connection.QuerySingleOrDefaultAsync<UserDao>(sql, new {Login = login.Value});
         if (userDao is null)
         {
             throw new NotImplementedException();
         }
 
-        var usersFabric = new UsersFabric(userDao);
+        var usersFabric = new UsersFabric(new()
+        {
+            PasswordHash = userDao.PasswordHash,
+            Email = userDao.Email,
+            Login = userDao.Login,
+            RegistrationDate = userDao.RegistrationDate,
+            AuthorizationDate = userDao.AuthorizationDate,
+            VkUser = userDao.VkUser is null
+                ? null
+                : new()
+                {
+                    InternalUserId = userDao.VkUser.InternalUserId
+                }
+        });
+
         return usersFabric.Restore(userDao.Id);
     }
 
@@ -46,14 +60,29 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     {
         using var connection = _dbContext.CreateOpenedConnection();
         const string sql = @"SELECT * From Users WHERE Email = @Email";
-        
+
         var userDao = await connection.QuerySingleOrDefaultAsync<UserDao>(sql, new {Email = email.Value});
         if (userDao is null)
         {
             throw new NotImplementedException();
         }
 
-        var usersFabric = new UsersFabric(userDao);
+        var usersFabric = new UsersFabric(new()
+        {
+            PasswordHash = userDao.PasswordHash,
+            Email = userDao.Email,
+            Login = userDao.Login,
+            RegistrationDate = userDao.RegistrationDate,
+            AuthorizationDate = userDao.AuthorizationDate,
+            VkUser = userDao.VkUser is null
+                ? null
+                : new()
+                {
+                    Id = userDao.VkUser.Id,
+                    InternalUserId = userDao.VkUser.InternalUserId
+                }
+        });
+
         return usersFabric.Restore(userDao.Id);
     }
 }

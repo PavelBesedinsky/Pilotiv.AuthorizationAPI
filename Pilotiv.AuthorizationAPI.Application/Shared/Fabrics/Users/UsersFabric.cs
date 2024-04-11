@@ -1,25 +1,25 @@
 ﻿using FluentResults;
+using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.Entities;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
-using Pilotiv.AuthorizationAPI.Infrastructure.Daos.Users;
 
-namespace Pilotiv.AuthorizationAPI.Infrastructure.Fabrics.Users;
+namespace Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
 
 /// <summary>
 /// Фабрика пользователей.
 /// </summary>
 public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 {
-    private readonly UserDao _userDao;
+    private readonly UsersFabricUserPayload _value;
 
     /// <summary>
     /// Создание фабрики пользователей.
     /// </summary>
-    /// <param name="userDao">Объект доступа данных пользователя.</param>
-    public UsersFabric(UserDao userDao)
+    /// <param name="value">Объект переноса данных информации о пользователе для фабрики пользователей.</param>
+    public UsersFabric(UsersFabricUserPayload value)
     {
-        _userDao = userDao;
+        _value = value;
     }
 
     /// <inheritdoc />
@@ -29,9 +29,9 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 
         // Получение хэша-пароля пользователя.
         UserPasswordHash? passwordHash = null;
-        if (!string.IsNullOrWhiteSpace(_userDao.PasswordHash))
+        if (!string.IsNullOrWhiteSpace(_value.PasswordHash))
         {
-            var getPasswordHashResult = UserPasswordHash.Create(_userDao.PasswordHash);
+            var getPasswordHashResult = UserPasswordHash.Create(_value.PasswordHash);
             if (getPasswordHashResult.IsFailed)
             {
                 errors.AddRange(getPasswordHashResult.Errors);
@@ -41,7 +41,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         }
 
         // Получение адреса электронной почты пользователя.
-        var getUserEmailResult = UserEmail.Create(_userDao.Email);
+        var getUserEmailResult = UserEmail.Create(_value.Email ?? string.Empty);
         if (getUserEmailResult.IsFailed)
         {
             errors.AddRange(getUserEmailResult.Errors);
@@ -50,7 +50,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         var email = getUserEmailResult.ValueOrDefault;
 
         // Получение даты регистрации пользователя.
-        var getUserRegistrationDate = UserRegistrationDate.Create(_userDao.RegistrationDate);
+        var getUserRegistrationDate = UserRegistrationDate.Create(_value.RegistrationDate);
         if (getUserRegistrationDate.IsFailed)
         {
             errors.AddRange(getUserRegistrationDate.Errors);
@@ -59,7 +59,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         var registrationDate = getUserRegistrationDate.ValueOrDefault;
 
         // Получение даты авторизации пользователя.
-        var getUserAuthorizationDate = UserAuthorizationDate.Create(_userDao.AuthorizationDate);
+        var getUserAuthorizationDate = UserAuthorizationDate.Create(_value.AuthorizationDate);
         if (getUserAuthorizationDate.IsFailed)
         {
             errors.AddRange(getUserAuthorizationDate.Errors);
@@ -68,7 +68,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         var authorizationDate = getUserAuthorizationDate.ValueOrDefault;
 
         // Получение логина пользователя.
-        var getUserLoginResult = UserLogin.Create(_userDao.Login);
+        var getUserLoginResult = UserLogin.Create(_value.Login ?? string.Empty);
         if (getUserLoginResult.IsFailed)
         {
             errors.AddRange(getUserAuthorizationDate.Errors);
@@ -78,9 +78,9 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 
         // Получение пользователя VK.
         VkUser? vkUser = null;
-        if (_userDao.VkUser is not null)
+        if (_value.VkUser is not null)
         {
-            var getVkUserResult = CreateVkUser(_userDao.VkUser);
+            var getVkUserResult = CreateVkUser(_value.VkUser);
             if (getVkUserResult.IsFailed)
             {
                 errors.AddRange(getVkUserResult.Errors);
@@ -104,9 +104,9 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 
         // Получение хэша-пароля пользователя.
         UserPasswordHash? passwordHash = null;
-        if (!string.IsNullOrWhiteSpace(_userDao.PasswordHash))
+        if (!string.IsNullOrWhiteSpace(_value.PasswordHash))
         {
-            var getPasswordHashResult = UserPasswordHash.Create(_userDao.PasswordHash);
+            var getPasswordHashResult = UserPasswordHash.Create(_value.PasswordHash);
             if (getPasswordHashResult.IsFailed)
             {
                 errors.AddRange(getPasswordHashResult.Errors);
@@ -116,7 +116,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         }
 
         // Получение адреса электронной почты пользователя.
-        var getUserEmailResult = UserEmail.Create(_userDao.Email);
+        var getUserEmailResult = UserEmail.Create(_value.Email ?? string.Empty);
         if (getUserEmailResult.IsFailed)
         {
             errors.AddRange(getUserEmailResult.Errors);
@@ -125,7 +125,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         var email = getUserEmailResult.ValueOrDefault;
 
         // Получение даты регистрации пользователя.
-        var getUserRegistrationDate = UserRegistrationDate.Create(_userDao.RegistrationDate);
+        var getUserRegistrationDate = UserRegistrationDate.Create(_value.RegistrationDate);
         if (getUserRegistrationDate.IsFailed)
         {
             errors.AddRange(getUserRegistrationDate.Errors);
@@ -134,7 +134,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         var registrationDate = getUserRegistrationDate.ValueOrDefault;
 
         // Получение даты авторизации пользователя.
-        var getUserAuthorizationDate = UserAuthorizationDate.Create(_userDao.AuthorizationDate);
+        var getUserAuthorizationDate = UserAuthorizationDate.Create(_value.AuthorizationDate);
         if (getUserAuthorizationDate.IsFailed)
         {
             errors.AddRange(getUserAuthorizationDate.Errors);
@@ -143,7 +143,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
         var authorizationDate = getUserAuthorizationDate.ValueOrDefault;
 
         // Получение логина пользователя.
-        var getUserLoginResult = UserLogin.Create(_userDao.Login);
+        var getUserLoginResult = UserLogin.Create(_value.Login ?? string.Empty);
         if (getUserLoginResult.IsFailed)
         {
             errors.AddRange(getUserAuthorizationDate.Errors);
@@ -153,9 +153,9 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 
         // Получение пользователя VK.
         VkUser? vkUser = null;
-        if (_userDao.VkUser is not null)
+        if (_value.VkUser is not null)
         {
-            var getVkUserResult = RestoreVkUser(_userDao.VkUser);
+            var getVkUserResult = RestoreVkUser(_value.VkUser);
             if (getVkUserResult.IsFailed)
             {
                 errors.AddRange(getVkUserResult.Errors);
@@ -175,11 +175,11 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
     /// <summary>
     /// Создание пользователя VK.
     /// </summary>
-    /// <param name="vkUserDao">Объект доступа данных пользователя VK.</param>
+    /// <param name="value">Объект переноса данных информации о пользователе VK для фабрики пользователей.</param>
     /// <returns>Пользователь VK.</returns>
-    private static Result<VkUser> CreateVkUser(VkUserDao vkUserDao)
+    private static Result<VkUser> CreateVkUser(UsersFabricVkUserPayload value)
     {
-        var getVkInternalUserIdResult = VkInternalUserId.Create(vkUserDao.InternalUserId ?? string.Empty);
+        var getVkInternalUserIdResult = VkInternalUserId.Create(value.InternalUserId ?? string.Empty);
         if (getVkInternalUserIdResult.IsFailed)
         {
             return getVkInternalUserIdResult.ToResult();
@@ -199,11 +199,11 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
     /// <summary>
     /// Восстановление пользователя VK.
     /// </summary>
-    /// <param name="vkUserDao">Объект доступа данных пользователя VK.</param>
+    /// <param name="value">Объект переноса данных информации о пользователе VK для фабрики пользователей.</param>
     /// <returns>Пользователь VK.</returns>
-    private static Result<VkUser> RestoreVkUser(VkUserDao vkUserDao)
+    private static Result<VkUser> RestoreVkUser(UsersFabricVkUserPayload value)
     {
-        var getVkInternalUserIdResult = VkInternalUserId.Create(vkUserDao.InternalUserId ?? string.Empty);
+        var getVkInternalUserIdResult = VkInternalUserId.Create(value.InternalUserId ?? string.Empty);
         if (getVkInternalUserIdResult.IsFailed)
         {
             return getVkInternalUserIdResult.ToResult();
@@ -211,7 +211,7 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 
         var vkInternalUserId = getVkInternalUserIdResult.ValueOrDefault;
 
-        var getVkUserResult = VkUser.Restore(VkUserId.Create(vkUserDao.Id), vkInternalUserId);
+        var getVkUserResult = VkUser.Restore(VkUserId.Create(value.Id), vkInternalUserId);
         if (getVkUserResult.IsFailed)
         {
             return getVkUserResult.ToResult();
