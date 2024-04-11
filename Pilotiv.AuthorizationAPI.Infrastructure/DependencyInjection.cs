@@ -3,10 +3,14 @@ using FluentMigrator.Runner;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
+using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
 using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 using Pilotiv.AuthorizationAPI.Infrastructure.Options;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Context;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
+using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Repositories.Commands;
+using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Repositories.Queries;
 using Pilotiv.AuthorizationAPI.Infrastructure.Services;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure;
@@ -29,6 +33,9 @@ public static class DependencyInjection
 
         services.AddSingleton<DbContext>();
         services.AddSingleton<DbMigration>();
+        
+        services.AddScoped<IUsersCommandsRepository, UsersCommandsRepository>();
+        services.AddScoped<IUsersQueriesRepository, UsersQueriesRepository>();
         
         services
             .AddFluentMigratorCore()
