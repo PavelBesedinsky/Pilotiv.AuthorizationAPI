@@ -8,8 +8,8 @@ public class M000001_InitVkUsersTable : AutoReversingMigration
 {
     public override void Up()
     {
-        Create.Table("VkUsers")
-            .WithColumn("Id").AsGuid().NotNullable().PrimaryKey()
-            .WithColumn("InternalId").AsString(255).NotNullable();
+        Create.Table("vk_users")
+            .WithColumn("id").AsGuid().NotNullable().PrimaryKey()
+            .WithColumn("internal_id").AsString(255).Nullable();
     }
 }

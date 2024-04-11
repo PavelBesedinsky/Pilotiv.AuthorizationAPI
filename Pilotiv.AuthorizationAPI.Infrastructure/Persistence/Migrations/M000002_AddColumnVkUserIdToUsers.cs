@@ -11,11 +11,11 @@ public class M000002_AddColumnVkUserIdToUsers : AutoReversingMigration
     public override void Up()
     {
         Create
-            .ForeignKey("VkUserId")
-            .FromTable("Users")
-            .ForeignColumn("VkUserId")
-            .ToTable("VkUsers")
-            .PrimaryColumn("Id")
+            .ForeignKey("vk_user_id")
+            .FromTable("users")
+            .ForeignColumn("vk_user_id")
+            .ToTable("vk_users")
+            .PrimaryColumn("id")
             .OnDelete(Rule.SetNull);
     }
 }

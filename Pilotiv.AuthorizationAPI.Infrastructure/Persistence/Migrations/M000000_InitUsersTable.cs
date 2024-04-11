@@ -9,13 +9,13 @@ public class M000000_InitUsersTable : AutoReversingMigration
     public override void Up()
     {
         Create
-            .Table("Users")
-            .WithColumn("Id").AsGuid().NotNullable().PrimaryKey()
-            .WithColumn("Login").AsString(255).NotNullable()
-            .WithColumn("PasswordHash").AsString(255).Nullable()
-            .WithColumn("Email").AsString(255).NotNullable()
-            .WithColumn("RegistrationDate").AsDateTime().NotNullable()
-            .WithColumn("AuthorizationDate").AsDateTime().NotNullable()
-            .WithColumn("VkUserId").AsGuid().Nullable();
+            .Table("users")
+            .WithColumn("id").AsGuid().NotNullable().PrimaryKey()
+            .WithColumn("login").AsString(255).Nullable()
+            .WithColumn("password_hash").AsString(255).Nullable()
+            .WithColumn("email").AsString(255).Nullable()
+            .WithColumn("registration_date").AsDateTime().Nullable()
+            .WithColumn("authorization_date").AsDateTime().Nullable()
+            .WithColumn("vk_user_id").AsGuid().Nullable();
     }
 }
