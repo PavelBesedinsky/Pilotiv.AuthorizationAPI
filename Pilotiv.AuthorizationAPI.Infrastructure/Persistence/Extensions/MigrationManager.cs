@@ -27,11 +27,6 @@ public static class MigrationManager
 
             migrationRunner.ListMigrations();
             migrationRunner.MigrateUp();
-            // var migrations = migrationRunner.MigrationLoader.LoadMigrations();
-            // foreach (var migration in migrations)
-            // {
-            //     migrationRunner.Up(migration.Value.Migration);
-            // }
         }
         catch (Exception ex)
         {

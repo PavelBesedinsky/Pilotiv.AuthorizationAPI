@@ -57,8 +57,7 @@ public class OAuthVkProvider : IOAuthVkProvider, IDisposable
 
     /// <inheritdoc />
     public async Task<Result<VkAccessTokenPayload>> GetAccessTokenAsync(string clientId, string clientSecret,
-        string redirectUri, string code,
-        CancellationToken cancellationToken)
+        string redirectUri, string code, CancellationToken cancellationToken)
     {
         var response = await _httpClint.GetAsync(
             $"https://oauth.vk.com/access_token?client_id={clientId}&client_secret={clientSecret}&redirect_uri={redirectUri}&code={code}",

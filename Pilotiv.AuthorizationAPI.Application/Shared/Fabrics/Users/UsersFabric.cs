@@ -67,15 +67,28 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 
         var authorizationDate = getUserAuthorizationDate.ValueOrDefault;
 
-        // Получение логина пользователя.
-        var getUserLoginResult = UserLogin.Create(_value.Login ?? string.Empty);
-        if (getUserLoginResult.IsFailed)
+        UserLogin? login = null;
+        if (!string.IsNullOrWhiteSpace(_value.Login))
         {
-            errors.AddRange(getUserAuthorizationDate.Errors);
+            // Получение логина пользователя.
+            var getUserLoginResult = UserLogin.Create(_value.Login);
+            if (getUserLoginResult.IsFailed)
+            {
+                errors.AddRange(getUserLoginResult.Errors);
+            }
+
+            login = getUserLoginResult.ValueOrDefault;
+        }
+        
+        // Создание пользователя.
+        var createUserResult = User.Create(passwordHash, email, registrationDate, authorizationDate, login);
+        if (createUserResult.IsFailed)
+        {
+            errors.AddRange(createUserResult.Errors);
         }
 
-        var login = getUserLoginResult.ValueOrDefault;
-
+        var user = createUserResult.ValueOrDefault;
+        
         // Получение пользователя VK.
         VkUser? vkUser = null;
         if (_value.VkUser is not null)
@@ -88,13 +101,23 @@ public class UsersFabric : IAggregateFabric<User, UserId, Guid>
 
             vkUser = getVkUserResult.ValueOrDefault;
         }
+        
+        // Добавление пользователя VK.
+        if (vkUser is not null)
+        {
+            var addVkUserResult = user.AddVkUser(vkUser);
+            if (addVkUserResult.IsFailed)
+            {
+                errors.AddRange(addVkUserResult.Errors);
+            }
+        }
 
         if (errors.Any())
         {
             return Result.Fail(errors);
         }
 
-        return User.Create(passwordHash, email, registrationDate, authorizationDate, login, vkUser);
+        return user;
     }
 
     /// <inheritdoc />

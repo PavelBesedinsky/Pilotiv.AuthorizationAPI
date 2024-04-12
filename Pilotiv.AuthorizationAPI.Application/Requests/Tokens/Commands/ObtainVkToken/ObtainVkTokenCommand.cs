@@ -12,5 +12,14 @@ public class ObtainVkTokenCommand : IRequest<Result<ObtainVkTokenCommandResponse
     /// <summary>
     /// Код авторизации.
     /// </summary>
-    public string? Code { get; init; }
+    public string Code { get; }
+
+    /// <summary>
+    /// Создание команды получения токена VK.
+    /// </summary>
+    /// <param name="code">Код авторизации.</param>
+    public ObtainVkTokenCommand(string code)
+    {
+        Code = code;
+    }
 }

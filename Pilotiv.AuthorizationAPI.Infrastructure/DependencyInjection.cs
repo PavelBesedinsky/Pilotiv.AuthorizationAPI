@@ -27,8 +27,10 @@ public static class DependencyInjection
     /// <returns>Конструктор приложения.</returns>
     public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+        
         var services = builder.Services;
-
+        
         services.AddScoped<IOAuthVkProvider, OAuthVkProvider>();
 
         services.AddSingleton<DbContext>();
@@ -36,6 +38,7 @@ public static class DependencyInjection
         
         services.AddScoped<IUsersCommandsRepository, UsersCommandsRepository>();
         services.AddScoped<IUsersQueriesRepository, UsersQueriesRepository>();
+
         
         services
             .AddFluentMigratorCore()

@@ -16,12 +16,12 @@ public class VkAccessTokenPayload
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public int Expires_In { get; init; }
-    
+
     /// <summary>
     /// Идентификатор пользователя VK.
     /// </summary>
     // ReSharper disable once InconsistentNaming
-    public int User_ID { get; init; }
+    public int User_Id { get; init; }
 
     /// <summary>
     /// Электронный адрес пользователя.

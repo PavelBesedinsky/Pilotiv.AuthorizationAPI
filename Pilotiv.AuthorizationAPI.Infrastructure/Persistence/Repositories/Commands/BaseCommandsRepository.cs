@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Pilotiv.AuthorizationAPI.Domain.Primitives;
-using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Context;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Repositories.Commands;
 
@@ -12,17 +11,15 @@ public abstract class BaseCommandsRepository
     /// <summary>
     /// Вызов обработчика.
     /// </summary>
-    /// <param name="dbContext">Контекст базы данных.</param>
+    /// <param name="connection">Соединение.</param>
+    /// <param name="transaction">Транзакция.</param>
     /// <param name="entityWithDomainEvents">Доменная сущность.</param>
     /// <param name="domainEventsHandler">Обработчик доменных событий.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    protected static async Task InvokeAsync(DbContext dbContext, IHasDomainEvents entityWithDomainEvents,
+    protected static async Task InvokeAsync(IDbConnection connection, IDbTransaction transaction, IHasDomainEvents entityWithDomainEvents,
         Func<IDbConnection, IDbTransaction, IDomainEvent, Task> domainEventsHandler,
         CancellationToken cancellationToken = default)
     {
-        using var connection = dbContext.CreateOpenedConnection();
-        var trx = connection.BeginTransaction();
-
         foreach (var domainEvent in entityWithDomainEvents.DomainEvents)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -30,10 +27,9 @@ public abstract class BaseCommandsRepository
                 return;
             }
 
-            await domainEventsHandler(connection, trx, domainEvent);
+            await domainEventsHandler(connection, transaction, domainEvent);
         }
 
-        trx.Commit();
         entityWithDomainEvents.ClearDomainEvents();
     }
 }

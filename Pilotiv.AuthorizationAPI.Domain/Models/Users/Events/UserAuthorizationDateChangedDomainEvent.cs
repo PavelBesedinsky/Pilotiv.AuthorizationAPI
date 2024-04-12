@@ -8,4 +8,4 @@ namespace Pilotiv.AuthorizationAPI.Domain.Models.Users.Events;
 /// </summary>
 /// <param name="UserId">Идентификатор пользователя.</param>
 /// <param name="AuthorizationDate">Дата авторизации пользователя.</param>
-public record UserAuthorizationDateChanged(UserId UserId, UserAuthorizationDate AuthorizationDate) : IDomainEvent;
+public record UserAuthorizationDateChangedDomainEvent(UserId UserId, UserAuthorizationDate AuthorizationDate) : IDomainEvent;

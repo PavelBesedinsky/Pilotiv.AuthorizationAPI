@@ -13,5 +13,5 @@ public class VkUserDao
     /// <summary>
     /// Внутренний идентификатор пользователя в VK.
     /// </summary>
-    public string? InternalUserId { get; set; }
+    public string? InternalId { get; set; }
 }

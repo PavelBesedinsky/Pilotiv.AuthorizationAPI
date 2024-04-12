@@ -20,12 +20,13 @@ public class AuthController : ApiControllerBase
     /// <summary>
     /// Получение токена.
     /// </summary>
-    /// <param name="command">Команда получения токена VK.</param>
+    /// <param name="code">Код авторизации.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    [HttpPost("token")]
-    public async Task<ActionResult> ObtainVkTokenAsync([FromBody] ObtainVkTokenCommand command,
+    [HttpPost("token/vk")]
+    public async Task<ActionResult> ObtainVkTokenAsync([FromQuery] string code,
         CancellationToken cancellationToken = default)
     {
+        var command = new ObtainVkTokenCommand(code);
         var commandResult = await Mediator.Send(command, cancellationToken);
         if (commandResult.IsFailed)
         {
