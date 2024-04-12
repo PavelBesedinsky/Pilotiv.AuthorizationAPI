@@ -52,28 +52,14 @@ public class ObtainVkTokenCommandHandler : IRequestHandler<ObtainVkTokenCommand,
         CancellationToken cancellationToken = default)
     {
         var code = request.Code;
-        if (string.IsNullOrWhiteSpace(code))
+        var isVkCredentialsValidResult = ValidateVkCredentials(code);
+        if (isVkCredentialsValidResult.IsFailed)
         {
-            return ObtainVkTokenErrors.CodeIsNullOrEmpty();
+            return isVkCredentialsValidResult;
         }
-
-        if (string.IsNullOrWhiteSpace(_oAuthVkCredentials.ClientId))
-        {
-            return ObtainVkTokenErrors.ClientIdIsNullOrEmpty();
-        }
-
-        if (string.IsNullOrWhiteSpace(_oAuthVkCredentials.ClientSecret))
-        {
-            return ObtainVkTokenErrors.ClientSecretIsNullOrEmpty();
-        }
-
-        if (string.IsNullOrWhiteSpace(_oAuthVkCredentials.RedirectUri))
-        {
-            return ObtainVkTokenErrors.RedirectUriIsNullOrEmpty();
-        }
-
-        var getAccessTokenPayloadResult = await _oAuthVkProvider.GetAccessTokenAsync(_oAuthVkCredentials.ClientId,
-            _oAuthVkCredentials.ClientSecret, _oAuthVkCredentials.RedirectUri, code, cancellationToken);
+        
+        var getAccessTokenPayloadResult = await _oAuthVkProvider.GetAccessTokenAsync(_oAuthVkCredentials.ClientId!,
+            _oAuthVkCredentials.ClientSecret!, _oAuthVkCredentials.RedirectUri!, code, cancellationToken);
         if (getAccessTokenPayloadResult.IsFailed)
         {
             return getAccessTokenPayloadResult.ToResult();
@@ -163,5 +149,41 @@ public class ObtainVkTokenCommandHandler : IRequestHandler<ObtainVkTokenCommand,
         }
 
         return user;
+    }
+
+    /// <summary>
+    /// Валидация настроек для Authorization Code Flow для получения Access token пользователя.
+    /// </summary>
+    /// <param name="code">Код авторизации.</param>
+    private Result ValidateVkCredentials(string code)
+    {
+        List<Error> errors = new();
+        
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            errors.Add(ObtainVkTokenErrors.CodeIsNullOrEmpty());
+        }
+
+        if (string.IsNullOrWhiteSpace(_oAuthVkCredentials.ClientId))
+        {
+            errors.Add(ObtainVkTokenErrors.ClientIdIsNullOrEmpty());
+        }
+
+        if (string.IsNullOrWhiteSpace(_oAuthVkCredentials.ClientSecret))
+        {
+            errors.Add(ObtainVkTokenErrors.ClientSecretIsNullOrEmpty());
+        }
+
+        if (string.IsNullOrWhiteSpace(_oAuthVkCredentials.RedirectUri))
+        {
+            errors.Add(ObtainVkTokenErrors.RedirectUriIsNullOrEmpty());
+        }
+
+        if (errors.Any())
+        {
+            return errors;
+        }
+        
+        return Result.Ok();
     }
 }
