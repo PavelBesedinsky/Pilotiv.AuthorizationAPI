@@ -187,7 +187,16 @@ public class UsersQueriesRepository : IUsersQueriesRepository
 
         return usersFabric.Restore(userDao.Id);
     }
-    
+
+    /// <inheritdoc />
+    public async Task<Result<bool>> IsEmailOccupiedAsync(UserEmail email)
+    {
+        var connection = _dbContext.CreateOpenedConnection();
+        const string sql = @"SELECT EXISTS(SELECT 1 FROM users WHERE email=@email)";
+
+        return await connection.ExecuteScalarAsync<bool>(sql, new {Id = email.Value});
+    }
+
     /// <inheritdoc />
     public async Task<Result<bool>> IsVkUserExistsAsync(VkInternalUserId internalId)
     {

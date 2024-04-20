@@ -43,4 +43,11 @@ public interface IUsersQueriesRepository
     /// <param name="internalUserId">Внутренний идентификатор пользователя в VK.</param>
     /// <returns>Пользователь.</returns>
     Task<Result<User>> GetUserByVkInternalIdAsync(VkInternalUserId internalUserId);
+
+    /// <summary>
+    /// Получение признака, что адрес электронной почты занят.
+    /// </summary>
+    /// <param name="email">Адрес электронной почты пользователя.</param>
+    /// <returns>Признак, что адрес электронной почты занят.</returns>
+    Task<Result<bool>> IsEmailOccupiedAsync(UserEmail email);
 }

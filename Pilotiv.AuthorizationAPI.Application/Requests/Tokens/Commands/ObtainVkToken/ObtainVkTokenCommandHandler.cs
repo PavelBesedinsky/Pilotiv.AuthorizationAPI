@@ -83,7 +83,37 @@ public class ObtainVkTokenCommandHandler : IRequestHandler<ObtainVkTokenCommand,
 
         var isUserExists = isUserExistsResult.ValueOrDefault;
 
-        var getUserResult = isUserExists ? await UpdateUserAsync(vkInternalId) : CreateUser(payload);
+        Result<User> getUserResult;
+        
+        if (!isUserExists)
+        {
+            var getCheckingEmail = UserEmail.Create(payload.Email ?? string.Empty);
+            if (getCheckingEmail.IsFailed)
+            {
+                return getCheckingEmail.ToResult();
+            }
+
+            var checkingEmail = getCheckingEmail.ValueOrDefault;
+            
+            var isEmailOccupiedResult = await _usersQueriesRepository.IsEmailOccupiedAsync(checkingEmail);
+            if (isEmailOccupiedResult.IsFailed)
+            {
+                return isEmailOccupiedResult.ToResult();
+            }
+
+            var isEmailOccupied = isEmailOccupiedResult.ValueOrDefault;
+            if (isEmailOccupied)
+            {
+                return ObtainVkTokenErrors.EmailIsOccupied(checkingEmail);
+            }
+            
+            getUserResult = CreateUser(payload);
+        }
+        else
+        {
+            getUserResult = await UpdateUserAsync(vkInternalId);
+        }
+        
         if (getUserResult.IsFailed)
         {
             return getUserResult.ToResult();
