@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Pilotiv.AuthorizationAPI.Application.Requests.Tokens.Commands.ObtainVkToken;
+using Pilotiv.AuthorizationAPI.Application.Requests.Tokens.Commands.ObtainVkToken.Dtos;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Controllers;
 
@@ -23,7 +24,7 @@ public class AuthController : ApiControllerBase
     /// <param name="code">Код авторизации.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     [HttpPost("token/vk")]
-    public async Task<ActionResult> ObtainVkTokenAsync([FromQuery] string code,
+    public async Task<ActionResult<ObtainVkTokenCommandResponse>> ObtainVkTokenAsync([FromQuery] string code,
         CancellationToken cancellationToken = default)
     {
         var command = new ObtainVkTokenCommand(code);
@@ -33,6 +34,6 @@ public class AuthController : ApiControllerBase
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
 
-        return Ok();
+        return commandResult.ValueOrDefault;
     }
 }
