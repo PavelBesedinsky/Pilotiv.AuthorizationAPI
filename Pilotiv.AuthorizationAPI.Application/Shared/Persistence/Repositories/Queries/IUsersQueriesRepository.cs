@@ -45,6 +45,13 @@ public interface IUsersQueriesRepository
     Task<Result<User>> GetUserByVkInternalIdAsync(VkInternalUserId internalUserId);
 
     /// <summary>
+    /// Получение признака, что логин занят.
+    /// </summary>
+    /// <param name="login">Логин пользователя.</param>
+    /// <returns>Признак, что логин занят.</returns>
+    Task<Result<bool>> IsLoginOccupiedAsync(UserLogin login);
+    
+    /// <summary>
     /// Получение признака, что адрес электронной почты занят.
     /// </summary>
     /// <param name="email">Адрес электронной почты пользователя.</param>

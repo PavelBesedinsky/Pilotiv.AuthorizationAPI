@@ -16,8 +16,12 @@ public static class DependencyInjection
     public static IHostApplicationBuilder AddPresentation(this IHostApplicationBuilder builder)
     {
         var services = builder.Services;
-        
-        services.AddControllers();
+
+        services.AddControllers()
+            .ConfigureApiBehaviorOptions(opt =>
+            {
+                opt.SuppressMapClientErrors = true;
+            });
         services.AddEndpointsApiExplorer();
 
         services.AddOpenApiDocument(OpenApiSettings.OpenApiDocument);

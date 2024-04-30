@@ -189,12 +189,21 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     }
 
     /// <inheritdoc />
+    public async Task<Result<bool>> IsLoginOccupiedAsync(UserLogin login)
+    {
+        var connection = _dbContext.CreateOpenedConnection();
+        const string sql = @"SELECT EXISTS(SELECT 1 FROM users WHERE login=@Login)";
+
+        return await connection.ExecuteScalarAsync<bool>(sql, new {Login = login.Value});
+    }
+
+    /// <inheritdoc />
     public async Task<Result<bool>> IsEmailOccupiedAsync(UserEmail email)
     {
         var connection = _dbContext.CreateOpenedConnection();
-        const string sql = @"SELECT EXISTS(SELECT 1 FROM users WHERE email=@email)";
+        const string sql = @"SELECT EXISTS(SELECT 1 FROM users WHERE email=@Email)";
 
-        return await connection.ExecuteScalarAsync<bool>(sql, new {Id = email.Value});
+        return await connection.ExecuteScalarAsync<bool>(sql, new {Email = email.Value});
     }
 
     /// <inheritdoc />

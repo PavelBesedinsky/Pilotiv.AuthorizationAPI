@@ -24,16 +24,16 @@ public class UsersController : ApiControllerBase
     /// <param name="id">Идентификатор пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Пользователь.</returns>
-    [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUserByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken = default)
-    {
-        var query = new GetUserByIdQuery(id);
-        var queryResult = await Mediator.Send(query, cancellationToken);
-        if (queryResult.IsFailed)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, queryResult.ToString());
-        }
-
-        return queryResult.ValueOrDefault;
-    }
+    // [HttpGet("{id}")]
+    // public async Task<ActionResult<User>> GetUserByIdAsync([FromRoute] Guid id, CancellationToken cancellationToken = default)
+    // {
+    //     var query = new GetUserByIdQuery(id);
+    //     var queryResult = await Mediator.Send(query, cancellationToken);
+    //     if (queryResult.IsFailed)
+    //     {
+    //         return StatusCode(StatusCodes.Status500InternalServerError, queryResult.ToString());
+    //     }
+    //
+    //     return queryResult.ValueOrDefault;
+    // }
 }

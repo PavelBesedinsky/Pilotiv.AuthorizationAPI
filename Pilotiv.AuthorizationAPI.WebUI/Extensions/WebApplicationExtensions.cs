@@ -16,6 +16,7 @@ public static class WebApplicationExtensions
     /// <returns><see cref="WebApplication"/>.</returns>
     public static WebApplication ConfigureWebApplication(this WebApplication webApplication)
     {
+        webApplication.UseCors(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
         webApplication.UseMiddleware<WebRootRedirectMiddleware>();
         
         if (webApplication.Environment.IsDevelopment())
