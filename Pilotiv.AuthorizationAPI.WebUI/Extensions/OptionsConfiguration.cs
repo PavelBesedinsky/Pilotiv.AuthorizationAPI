@@ -1,4 +1,5 @@
-﻿using Pilotiv.AuthorizationAPI.Application.Shared.Options;
+﻿using Pilotiv.Authentication.ConfigurationOptions;
+using Pilotiv.AuthorizationAPI.Application.Shared.Options;
 using Pilotiv.AuthorizationAPI.Infrastructure.Options;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Extensions;
@@ -19,9 +20,12 @@ public static class OptionsConfiguration
         var dbSettingsOptions = webApplicationBuilder.Configuration.GetSection(DbSettingsOptions.DbSettings);
         var oAuthVkCredentialsOptions =
             webApplicationBuilder.Configuration.GetSection(OAuthVkCredentialsOptions.OAuthVkCredentials);
-        
+        var authenticationKeysOptions =
+            webApplicationBuilder.Configuration.GetSection(AuthenticationKeysOption.AuthenticationKeys);
+
         services.Configure<DbSettingsOptions>(dbSettingsOptions);
         services.Configure<OAuthVkCredentialsOptions>(oAuthVkCredentialsOptions);
+        services.Configure<AuthenticationKeysOption>(authenticationKeysOptions);
 
         return services;
     }

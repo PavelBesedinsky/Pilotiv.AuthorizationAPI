@@ -39,4 +39,9 @@ public class UserDao
     /// Объект доступа данных пользователя VK.
     /// </summary>
     public VkUserDao? VkUser { get; set; }
+
+    /// <summary>
+    /// Объекты доступа данных токенов обновления.
+    /// </summary>
+    public List<RefreshTokenDao> RefreshTokens { get; set; } = new();
 }

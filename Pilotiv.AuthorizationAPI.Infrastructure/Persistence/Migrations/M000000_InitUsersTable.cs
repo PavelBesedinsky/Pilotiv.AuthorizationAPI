@@ -3,7 +3,7 @@ using FluentMigrator;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
 
-[Migration(0, "Users table creation")]
+[Migration(0, "Initializing users table.")]
 public class M000000_InitUsersTable : AutoReversingMigration
 {
     public override void Up()

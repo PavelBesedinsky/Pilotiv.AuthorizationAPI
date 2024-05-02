@@ -14,30 +14,37 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+        <PackageReference Include="Pilotiv.Authentication" Version="1.0.0" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\Pilotiv.AuthorizationAPI.Domain\Pilotiv.AuthorizationAPI.Domain.csproj" />
+        <ProjectReference Include="..\Pilotiv.AuthorizationAPI.Domain\Pilotiv.AuthorizationAPI.Domain.csproj" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <EmbeddedResource Update="Properties\Resources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Compile Update="Properties\Resources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Resources.resx</DependentUpon>
-      </Compile>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Folder Include="Requests\Registration\Commands\" />
-      <Folder Include="Shared\Persistence\Repositories\" />
+        <Folder Include="Requests\Auth\" />
+        <Folder Include="Shared\Persistence\Repositories\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Pilotiv.Authentication">
+          <HintPath>Shared\Services\Pilotiv.Authentication\Pilotiv.Authentication.win.x64.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

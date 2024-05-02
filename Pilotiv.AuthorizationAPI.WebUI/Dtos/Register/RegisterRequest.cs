@@ -3,7 +3,7 @@
 namespace Pilotiv.AuthorizationAPI.WebUI.Dtos.Register;
 
 /// <summary>
-/// Объект переноса данных запроса команды регистрации.
+/// Объект переноса данных команды регистрации.
 /// </summary>
 public class RegisterRequest
 {

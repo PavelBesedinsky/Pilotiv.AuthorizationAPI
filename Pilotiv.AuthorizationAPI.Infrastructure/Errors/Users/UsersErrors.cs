@@ -13,4 +13,6 @@ public static class UsersErrors
         new($"Не удалось найти пользователя по адресу электронной почты ({userEmail.Value})");
     public static Error UserNotFoundByInternalId(VkInternalUserId internalId) =>
         new($"Не удалось найти пользователя по внутреннему идентификатору пользователя в VK ({internalId.Value})");
+    public static Error UserPasswordIsIncorrect(UserId userId) =>
+        new($"Для пользователя ({userId.Value}) введен неверный пароль.");
 }

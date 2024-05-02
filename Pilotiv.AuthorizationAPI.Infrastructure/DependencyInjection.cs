@@ -5,13 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
-using Pilotiv.AuthorizationAPI.Application.Shared.Services;
+using Pilotiv.AuthorizationAPI.Application.Shared.Services.OAuthVkProvider;
 using Pilotiv.AuthorizationAPI.Infrastructure.Options;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Context;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Repositories.Commands;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Repositories.Queries;
-using Pilotiv.AuthorizationAPI.Infrastructure.Services;
+using Pilotiv.AuthorizationAPI.Infrastructure.Services.OAuth;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure;
 

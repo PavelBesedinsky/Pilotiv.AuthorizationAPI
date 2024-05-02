@@ -5,7 +5,7 @@ namespace Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
 /// <summary>
 /// Идентификатор пользователя VK.
 /// </summary>
-public class VkUserId : AggregateRootId<Guid>
+public class VkUserId : ValueObject
 {
     /// <summary>
     /// Создание идентификатор пользователя VK.
@@ -19,7 +19,7 @@ public class VkUserId : AggregateRootId<Guid>
     /// <summary>
     /// Значение идентификатора VK.
     /// </summary>
-    public override Guid Value { get; }
+    public Guid Value { get; }
 
     /// <summary>
     /// Создание идентификатора пользователя VK.

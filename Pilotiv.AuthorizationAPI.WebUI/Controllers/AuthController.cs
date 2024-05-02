@@ -1,10 +1,12 @@
-﻿using FluentResults;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Pilotiv.AuthorizationAPI.Application.Requests.Registration.Commands.Register;
-using Pilotiv.AuthorizationAPI.Application.Requests.Tokens.Commands.ObtainVkToken;
-using Pilotiv.AuthorizationAPI.Application.Requests.Tokens.Commands.ObtainVkToken.Dtos;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize.Dtos;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.ObtainVkToken;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.ObtainVkToken.Dtos;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Register;
+using Pilotiv.AuthorizationAPI.WebUI.Dtos.Authorize;
 using Pilotiv.AuthorizationAPI.WebUI.Dtos.Register;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Controllers;
@@ -62,12 +64,13 @@ public class AuthController : ApiControllerBase
     /// <summary>
     /// Регистрация пользователя.
     /// </summary>
-    /// <param name="request">Объект переноса данных запроса команды регистрации.</param>
+    /// <param name="request">Объект переноса данных команды регистрации.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     [AllowAnonymous]
+    [HttpPost("register")]
     public async Task<ActionResult> RegisterAsync([FromBody] RegisterRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -90,14 +93,91 @@ public class AuthController : ApiControllerBase
         var commandResult = await Mediator.Send(command, cancellationToken);
         if (commandResult.IsFailed)
         {
-            return GetStatusCodeForError(commandResult.Errors);
+            return StatusCode(StatusCodes.Status409Conflict);
         }
 
         return Ok();
     }
 
-    private ActionResult GetStatusCodeForError(IEnumerable<IError> errors)
+    /// <summary>
+    /// Авторизация пользователя.
+    /// </summary>
+    /// <param name="request">Объект переноса данных команды авторизации.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Объекта переноса данных ответа команды авторизации.</returns>
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorizeCommandResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [AllowAnonymous]
+    [HttpPost("authorize")]
+    public async Task<ActionResult<AuthorizeCommandResponse>> Authorize([FromBody] AuthorizeRequest request,
+        CancellationToken cancellationToken = default)
     {
-        return StatusCode(StatusCodes.Status409Conflict);
+        if (string.IsNullOrWhiteSpace(request.Login))
+        {
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Password))
+        {
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+
+        var ip = GetIpAddress();
+        if (string.IsNullOrWhiteSpace(ip))
+        {
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+        
+        var authorizeCommand = new AuthorizeCommand(request.Login, request.Password, ip);
+        var authorizeResult = await Mediator.Send(authorizeCommand, cancellationToken);
+        if (authorizeResult.IsFailed)
+        {
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+
+        var resultValue = authorizeResult.ValueOrDefault;
+        
+        var refreshToken = resultValue.RefreshToken;
+        if (refreshToken is not null)
+        {
+            AddRefreshTokenToHttpOnly(refreshToken.Token ?? string.Empty, refreshToken.Expires);
+        }
+
+        return resultValue;
+    }
+
+    /// <summary>
+    /// Получение IP адреса
+    /// </summary>
+    /// <returns>IP адрес</returns>
+    private string? GetIpAddress()
+    {
+        if (Request.Headers.TryGetValue("X-Forwarded-For", out var ipAddress))
+        {
+            return ipAddress.FirstOrDefault();
+        }
+
+        return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
+    }
+
+    /// <summary>
+    /// Добавление Refresh Token в httpOnly Cookie
+    /// </summary>
+    /// <param name="token">Токен.</param>
+    /// <param name="expires">Дата истечения срока жизни токен аобновления.</param>
+    private void AddRefreshTokenToHttpOnly(string token, DateTime expires)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return;
+        }
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = expires
+        };
+
+        Response.Cookies.Append("refreshToken", token, cookieOptions);
     }
 }

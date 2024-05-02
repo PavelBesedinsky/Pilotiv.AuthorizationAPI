@@ -12,6 +12,8 @@ namespace Pilotiv.AuthorizationAPI.Domain.Models.Users;
 /// </summary>
 public class User : AggregateRoot<UserId, Guid>
 {
+    private readonly HashSet<RefreshToken> _refreshTokens;
+
     /// <summary>
     /// Хэш-пароля пользователя.
     /// </summary>
@@ -43,6 +45,11 @@ public class User : AggregateRoot<UserId, Guid>
     public VkUser? VkUser { get; private set; }
 
     /// <summary>
+    /// Токены обновления.
+    /// </summary>
+    public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens;
+
+    /// <summary>
     /// Создание пользователя.
     /// </summary>
     /// <param name="id">Идентификатор пользователя.</param>
@@ -52,8 +59,10 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="authorizationDate">Дата авторизации пользователя.</param>
     /// <param name="login">Логин.</param>
     /// <param name="vkUser">Пользователь VK.</param>
+    /// <param name="refreshTokens">Токены обновления.</param>
     private User(UserId id, UserPasswordHash? passwordHash, UserEmail email, UserRegistrationDate registrationDate,
-        UserAuthorizationDate authorizationDate, UserLogin? login, VkUser? vkUser) : base(id)
+        UserAuthorizationDate authorizationDate, UserLogin? login, VkUser? vkUser,
+        IEnumerable<RefreshToken> refreshTokens) : base(id)
     {
         Email = email;
         PasswordHash = passwordHash;
@@ -61,6 +70,7 @@ public class User : AggregateRoot<UserId, Guid>
         AuthorizationDate = authorizationDate;
         Login = login;
         VkUser = vkUser;
+        _refreshTokens = refreshTokens.ToHashSet();
     }
 
     /// <summary>
@@ -72,9 +82,11 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="authorizationDate">Дата авторизации пользователя.</param>
     /// <param name="login">Логин.</param>
     /// <param name="vkUser">Пользователь VK.</param>
+    /// <param name="refreshTokens">Токены обновления.</param>
     private User(UserPasswordHash? passwordHash, UserEmail email, UserRegistrationDate registrationDate,
-        UserAuthorizationDate authorizationDate, UserLogin? login, VkUser? vkUser) : this(UserId.Create(), passwordHash,
-        email, registrationDate, authorizationDate, login, vkUser)
+        UserAuthorizationDate authorizationDate, UserLogin? login, VkUser? vkUser,
+        IEnumerable<RefreshToken> refreshTokens) : this(UserId.Create(), passwordHash,
+        email, registrationDate, authorizationDate, login, vkUser, refreshTokens)
     {
     }
 
@@ -90,7 +102,8 @@ public class User : AggregateRoot<UserId, Guid>
     public static Result<User> Create(UserPasswordHash? userPasswordHash, UserEmail email,
         UserRegistrationDate registrationDate, UserAuthorizationDate authorizationDate, UserLogin? login)
     {
-        var user = new User(userPasswordHash, email, registrationDate, authorizationDate, login, null);
+        var user = new User(userPasswordHash, email, registrationDate, authorizationDate, login, null,
+            Enumerable.Empty<RefreshToken>());
 
         user.AddDomainEvent(new UserCreatedDomainEvent(user.Id));
         if (userPasswordHash is not null)
@@ -119,11 +132,14 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="authorizationDate">Дата авторизации пользователя.</param>
     /// <param name="login">Логин.</param>
     /// <param name="vkUser">Пользователь VK.</param>
+    /// <param name="refreshTokens">Токены обновления.</param>
     /// <returns>Пользователь.</returns>
     public static Result<User> Restore(UserId userId, UserPasswordHash? userPasswordHash, UserEmail email,
-        UserRegistrationDate registrationDate, UserAuthorizationDate authorizationDate, UserLogin login, VkUser? vkUser)
+        UserRegistrationDate registrationDate, UserAuthorizationDate authorizationDate, UserLogin login, VkUser? vkUser,
+        IEnumerable<RefreshToken> refreshTokens)
     {
-        return new User(userId, userPasswordHash, email, registrationDate, authorizationDate, login, vkUser);
+        return new User(userId, userPasswordHash, email, registrationDate, authorizationDate, login, vkUser,
+            refreshTokens);
     }
 
     /// <summary>
@@ -139,6 +155,23 @@ public class User : AggregateRoot<UserId, Guid>
 
         VkUser = vkUser;
         AddDomainEvent(new UserVkUserChangedDomainEvent(Id, vkUser));
+
+        return Result.Ok();
+    }
+
+    /// <summary>
+    /// Добавление токена обновления.
+    /// </summary>
+    /// <param name="refreshToken">Токен обновления.</param>
+    public Result AddRefreshToken(RefreshToken refreshToken)
+    {
+        if (_refreshTokens.Any(token => token.Id == refreshToken.Id))
+        {
+            return Result.Ok();
+        }
+
+        _refreshTokens.Add(refreshToken);
+        AddDomainEvent(new UserRefreshTokenAddedDomainEvent(Id, refreshToken));
 
         return Result.Ok();
     }

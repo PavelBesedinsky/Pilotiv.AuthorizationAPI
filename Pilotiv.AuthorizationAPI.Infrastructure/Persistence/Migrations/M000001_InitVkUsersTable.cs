@@ -3,7 +3,7 @@ using FluentMigrator.Postgres;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
 
-[Migration(1, "VkUsers table creation")]
+[Migration(1, "Initializing vk_users table.")]
 public class M000001_InitVkUsersTable : AutoReversingMigration
 {
     public override void Up()

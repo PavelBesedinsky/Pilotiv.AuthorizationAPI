@@ -83,6 +83,6 @@ public class UserEmail : ValueObject
     /// <inheritdoc />
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Value;
+        yield return Value.Trim().ToLower();
     }
 }

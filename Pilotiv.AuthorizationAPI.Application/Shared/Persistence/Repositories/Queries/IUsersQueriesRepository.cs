@@ -22,6 +22,14 @@ public interface IUsersQueriesRepository
     /// <param name="login">Логин пользователя.</param>
     /// <returns>Пользователь.</returns>
     Task<Result<User>> GetUserByLoginAsync(UserLogin login);
+
+    /// <summary>
+    /// Получение пользователя по логину и паролю.
+    /// </summary>
+    /// <param name="login">Логин пользователя.</param>
+    /// <param name="password">Хэш-пароля пользователя.</param>
+    /// <returns>Пользователь.</returns>
+    Task<Result<User>> GetUserByLoginPasswordAsync(UserLogin login, UserPasswordHash password);
     
     /// <summary>
     /// Получение пользователя по электронному адресу.

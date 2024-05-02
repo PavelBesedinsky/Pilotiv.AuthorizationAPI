@@ -4,8 +4,7 @@ using FluentMigrator.Postgres;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
 
-// TODO: Исправить название
-[Migration(2, "Add column VkUserId to Users table")]
+[Migration(2, @"Add vk_user_id column to users table.")]
 public class M000002_AddColumnVkUserIdToUsers : AutoReversingMigration
 {
     public override void Up()

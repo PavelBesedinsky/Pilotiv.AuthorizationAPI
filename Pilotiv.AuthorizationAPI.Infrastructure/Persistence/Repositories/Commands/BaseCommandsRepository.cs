@@ -22,10 +22,7 @@ public abstract class BaseCommandsRepository
     {
         foreach (var domainEvent in entityWithDomainEvents.DomainEvents)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             await domainEventsHandler(connection, transaction, domainEvent);
         }
