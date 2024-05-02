@@ -63,18 +63,18 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
             UserRegistrationDateChangedDomainEvent dEvent => OnUserRegistrationDateChangedDomainEventAsync(dEvent, connection, transaction),
             UserAuthorizationDateChangedDomainEvent dEvent => OnUserAuthorizationDateChangedAsync(dEvent, connection, transaction),
             UserLoginChangedDomainEvent dEvent => OnUserLoginChangedDomainEventAsync(dEvent, connection, transaction),
-            UserRefreshTokenAddedDomainEvent dEvent => OnUserRefreshTokenAddedDomainEvent(dEvent, connection, transaction),
+            UserRefreshTokenAddedDomainEvent dEvent => OnUserRefreshTokenAddedDomainEventAsync(dEvent, connection, transaction),
             UserVkUserChangedDomainEvent dEvent => OnUserVkUserChangedDomainEventAsync(dEvent, connection, transaction),
             VkUserCreatedDomainEvent dEvent => OnVkUserCreatedDomainEventAsync(dEvent, connection, transaction),
             VkUserInternalIdChangedDomainEvent dEvent => OnVkUserInternalIdChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenCreatedDomainEvent dEvent => OnRefreshTokenCreatedDomainEvent(dEvent, connection, transaction),
-            RefreshTokenCreatedByIpChangedDomainEvent dEvent => OnRefreshTokenCreatedByIpChangedDomainEvent(dEvent, connection, transaction),
-            RefreshTokenCreatedDateChangedDomainEvent dEvent => OnRefreshTokenCreatedDateChangedDomainEvent(dEvent, connection, transaction),
-            RefreshTokenExpirationDateChangedDomainEvent dEvent => OnRefreshTokenExpirationDateChangedDomainEvent(dEvent, connection, transaction),
-            RefreshTokenReplacingTokenChangedDomainEvent dEvent => OnRefreshTokenReplacingTokenChangedDomainEvent(dEvent, connection, transaction),
-            RefreshTokenRevokedByIpChangedDomainEvent dEvent => OnRefreshTokenRevokedByIpChangedDomainEvent(dEvent, connection, transaction),
-            RefreshTokenRevokedDateChangedDomainEvent dEvent => OnRefreshTokenRevokedDateChangedDomainEvent(dEvent, connection, transaction),
-            RefreshTokenRevokeReasonChangedDomainEvent dEvent => OnRefreshTokenRevokeReasonChangedDomainEvent(dEvent, connection, transaction),
+            RefreshTokenCreatedDomainEvent dEvent => OnRefreshTokenCreatedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenCreatedByIpChangedDomainEvent dEvent => OnRefreshTokenCreatedByIpChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenCreatedDateChangedDomainEvent dEvent => OnRefreshTokenCreatedDateChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenExpirationDateChangedDomainEvent dEvent => OnRefreshTokenExpirationDateChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenReplacingTokenChangedDomainEvent dEvent => OnRefreshTokenReplacingTokenChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenRevokedByIpChangedDomainEvent dEvent => OnRefreshTokenRevokedByIpChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenRevokedDateChangedDomainEvent dEvent => OnRefreshTokenRevokedDateChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenRevokeReasonChangedDomainEvent dEvent => OnRefreshTokenRevokeReasonChangedDomainEventAsync(dEvent, connection, transaction),
             _ => throw new ArgumentOutOfRangeException(nameof(domainEvent))
         };
     }
@@ -170,7 +170,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnUserRefreshTokenAddedDomainEvent(UserRefreshTokenAddedDomainEvent dEvent, IDbConnection connection,
+    private static Task OnUserRefreshTokenAddedDomainEventAsync(UserRefreshTokenAddedDomainEvent dEvent, IDbConnection connection,
         IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET user_id = @UserId WHERE id = @Id";
@@ -227,7 +227,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenCreatedDomainEvent(RefreshTokenCreatedDomainEvent dEvent, IDbConnection connection,
+    private static Task OnRefreshTokenCreatedDomainEventAsync(RefreshTokenCreatedDomainEvent dEvent, IDbConnection connection,
         IDbTransaction transaction)
     {
         const string sql = @"INSERT INTO refresh_tokens (id) VALUES(@Id)";
@@ -240,7 +240,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenCreatedByIpChangedDomainEvent(RefreshTokenCreatedByIpChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenCreatedByIpChangedDomainEventAsync(RefreshTokenCreatedByIpChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET created_by_ip = @CreatedByIp WHERE Id = @Id";
@@ -253,7 +253,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenCreatedDateChangedDomainEvent(RefreshTokenCreatedDateChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenCreatedDateChangedDomainEventAsync(RefreshTokenCreatedDateChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET created_date = @CreatedDate WHERE Id = @Id";
@@ -266,7 +266,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenExpirationDateChangedDomainEvent(RefreshTokenExpirationDateChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenExpirationDateChangedDomainEventAsync(RefreshTokenExpirationDateChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET expiration_date = @ExpirationDate WHERE Id = @Id";
@@ -279,7 +279,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenReplacingTokenChangedDomainEvent(RefreshTokenReplacingTokenChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenReplacingTokenChangedDomainEventAsync(RefreshTokenReplacingTokenChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET replacing_token_id = @ReplacingTokenId WHERE Id = @Id";
@@ -292,7 +292,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenRevokedByIpChangedDomainEvent(RefreshTokenRevokedByIpChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenRevokedByIpChangedDomainEventAsync(RefreshTokenRevokedByIpChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET revoked_by_ip = @RevokedByIp WHERE Id = @Id";
@@ -305,7 +305,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenRevokedDateChangedDomainEvent(RefreshTokenRevokedDateChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenRevokedDateChangedDomainEventAsync(RefreshTokenRevokedDateChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET revoked_date = @RevokedDate WHERE Id = @Id";
@@ -318,7 +318,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private Task OnRefreshTokenRevokeReasonChangedDomainEvent(RefreshTokenRevokeReasonChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenRevokeReasonChangedDomainEventAsync(RefreshTokenRevokeReasonChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET revoke_reason = @RevokeReason WHERE Id = @Id";
