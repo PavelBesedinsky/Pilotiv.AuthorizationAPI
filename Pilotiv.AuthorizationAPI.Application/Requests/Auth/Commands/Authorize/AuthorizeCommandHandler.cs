@@ -1,9 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
 using Microsoft.Extensions.Options;
-using Pilotiv.Authentication.ConfigurationOptions;
-using Pilotiv.Authentication.Entities;
-using Pilotiv.Authentication.Services;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Shared.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
@@ -11,6 +8,8 @@ using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Comma
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
+using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
+using Pilotiv.AuthorizationAPI.Jwt.Services;
 
 namespace Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize;
 
@@ -21,7 +20,7 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
 {
     private readonly IUsersCommandsRepository _usersCommandsRepository;
     private readonly IUsersQueriesRepository _usersQueriesRepository;
-    private readonly JwtUtils _jwtUtils;
+    private readonly JwtProvider _jwtProvider;
 
     /// <summary>
     /// Создание обработчика команды авторизации.
@@ -34,7 +33,7 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
     {
         _usersCommandsRepository = usersCommandsRepository;
         _usersQueriesRepository = usersQueriesRepository;
-        _jwtUtils = new JwtUtils(authenticationKeysOption);
+        _jwtProvider = new JwtProvider(authenticationKeysOption);
     }
 
     /// <summary>
@@ -110,7 +109,7 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
     /// <returns>Токен доступа.</returns>
     private string GenerateAccessTokenForUser(User user)
     {
-        return _jwtUtils.GenerateAccessToken(new()
+        return _jwtProvider.GenerateAccessToken(new()
         {
             ExpiringHours = 1,
             Payload = new Dictionary<string, string>
@@ -127,7 +126,7 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
     /// <returns>Токен обновления.</returns>
     private Result<Domain.Models.Users.Entities.RefreshToken> CreateRefreshToken(string? ip)
     {
-        var refreshToken =_jwtUtils.GenerateRefreshToken(new()
+        var refreshToken =_jwtProvider.GenerateRefreshToken(new()
         {
             ExpiringHours = 720,
             Ip = ip

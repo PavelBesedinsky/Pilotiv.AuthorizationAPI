@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Pilotiv.Authentication.Certificates;
-using Pilotiv.Authentication.ConfigurationOptions;
+using Pilotiv.AuthorizationAPI.Jwt.Certificates;
+using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
 using Pilotiv.AuthorizationAPI.WebUI.Middlewares;
 using Pilotiv.AuthorizationAPI.WebUI.Settings;
 
@@ -21,7 +21,7 @@ public static class DependencyInjection
     {
         var services = builder.Services;
 
-        services.AddAuthentication(builder.Configuration);
+        services.AddJwtAuthentication(builder.Configuration);
         services.AddControllers()
             .ConfigureApiBehaviorOptions(opt => { opt.SuppressMapClientErrors = true; });
         services.AddEndpointsApiExplorer();
@@ -41,7 +41,7 @@ public static class DependencyInjection
     /// <param name="configuration">Конфигурация</param>
     /// <returns>Коллекция сервисов</returns>
     /// <exception cref="ArgumentNullException">Исключение выбрасывается при отсутствующем PublicKey в конфигурации</exception>
-    private static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var publicKey = configuration.GetSection(AuthenticationKeysOption.AuthenticationKeys)
             .Get<AuthenticationKeysOption>()?.PublicKey;

@@ -1,6 +1,6 @@
-﻿using Pilotiv.Authentication.ConfigurationOptions;
-using Pilotiv.AuthorizationAPI.Application.Shared.Options;
+﻿using Pilotiv.AuthorizationAPI.Application.Shared.Options;
 using Pilotiv.AuthorizationAPI.Infrastructure.Options;
+using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Extensions;
 
