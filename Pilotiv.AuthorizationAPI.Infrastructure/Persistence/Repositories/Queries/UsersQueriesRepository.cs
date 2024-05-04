@@ -175,7 +175,7 @@ public class UsersQueriesRepository : IUsersQueriesRepository
 
                 return user;
             }, param);
-        
+
         return users.GroupBy(entity => entity.Id).Select(entity =>
         {
             var user = entity.First();
@@ -191,7 +191,18 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     /// <returns>Пользователь.</returns>
     private static Result<User> RestoreUserFromDao(UserDao userDao)
     {
-        var usersFabric = new UserFactory(new()
+        var usersFabric = new UserFactory(GetUsersFactoryUserPayload(userDao));
+        return usersFabric.Restore();
+    }
+
+    /// <summary>
+    /// Получение объекта переноса данных информации о пользователе для фабрики пользователей.
+    /// </summary>
+    /// <param name="userDao">Объект доступа данных пользователя.</param>
+    /// <returns>Объект переноса данных информации о пользователе для фабрики пользователей.</returns>
+    private static UsersFactoryUserPayload GetUsersFactoryUserPayload(UserDao userDao)
+    {
+        return new()
         {
             Id = userDao.Id,
             PasswordHash = userDao.PasswordHash,
@@ -207,9 +218,7 @@ public class UsersQueriesRepository : IUsersQueriesRepository
                     InternalUserId = userDao.VkUser.InternalId
                 },
             RefreshTokens = userDao.RefreshTokens.Select(GetUsersFactoryRefreshTokenPayload).ToList()
-        });
-
-        return usersFabric.Restore();
+        };
     }
 
     /// <summary>
@@ -219,7 +228,7 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     /// <returns>Объект переноса данных информации о токене обновления для фабрики пользователей.</returns>
     private static UsersFactoryRefreshTokenPayload GetUsersFactoryRefreshTokenPayload(RefreshTokenDao refreshTokenDao)
     {
-        return new UsersFactoryRefreshTokenPayload(refreshTokenDao.Id ?? string.Empty)
+        return new(refreshTokenDao.Id ?? string.Empty)
         {
             ExpirationDate = refreshTokenDao.ExpirationDate,
             CreatedDate = refreshTokenDao.CreatedDate,
