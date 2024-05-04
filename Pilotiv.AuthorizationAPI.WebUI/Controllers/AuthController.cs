@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.ObtainVkToken;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.ObtainVkToken.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Register;
-using Pilotiv.AuthorizationAPI.WebUI.Dtos.Authorize;
-using Pilotiv.AuthorizationAPI.WebUI.Dtos.Register;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.RevokeRefreshToken;
+using Pilotiv.AuthorizationAPI.WebUI.Dtos.AuthController;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Controllers;
 
@@ -109,7 +110,7 @@ public class AuthController : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [AllowAnonymous]
     [HttpPost("authorize")]
-    public async Task<ActionResult<AuthorizeCommandResponse>> Authorize([FromBody] AuthorizeRequest request,
+    public async Task<ActionResult<AuthorizeCommandResponse>> AuthorizeAsync([FromBody] AuthorizeRequest request,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(request.Login))
@@ -127,7 +128,7 @@ public class AuthController : ApiControllerBase
         {
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
-        
+
         var authorizeCommand = new AuthorizeCommand(request.Login, request.Password, ip);
         var authorizeResult = await Mediator.Send(authorizeCommand, cancellationToken);
         if (authorizeResult.IsFailed)
@@ -136,7 +137,7 @@ public class AuthController : ApiControllerBase
         }
 
         var resultValue = authorizeResult.ValueOrDefault;
-        
+
         var refreshToken = resultValue.RefreshToken;
         if (refreshToken is not null)
         {
@@ -144,6 +145,45 @@ public class AuthController : ApiControllerBase
         }
 
         return resultValue;
+    }
+
+    /// <summary>
+    /// Отзыв токена обновления.
+    /// </summary>
+    /// <param name="request">Объект переноса данных запроса отзыва токена обновления.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AuthorizeCommandResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [AllowAnonymous]
+    [HttpPost("revoke_refresh_token")]
+    public async Task<ActionResult> RevokeRefreshTokenAsync(
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]
+        RevokeRefreshTokenRequest? request = default,
+        CancellationToken cancellationToken = default)
+    {
+        var refreshToken = string.IsNullOrWhiteSpace(request?.RefreshToken)
+            ? Request.Cookies["refreshToken"]
+            : request.RefreshToken;
+        var reason = request?.Reason ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return BadRequest("Неверный параметр запроса.");
+        }
+
+        var command = new RevokeRefreshTokenCommand(refreshToken)
+        {
+            Reason = reason,
+            Ip = GetIpAddress()
+        };
+        
+        var commandResult = await Mediator.Send(command, cancellationToken);
+        if (commandResult.IsFailed)
+        {
+            return BadRequest("Ошибка при выполнении команды отзыва токена.");
+        }
+
+        return Ok();
     }
 
     /// <summary>

@@ -53,6 +53,13 @@ public interface IUsersQueriesRepository
     Task<Result<User>> GetUserByVkInternalIdAsync(VkInternalUserId internalUserId);
 
     /// <summary>
+    /// Получение пользователя по токену обновления.
+    /// </summary>
+    /// <param name="refreshTokenId">Идентификатор токена обновления.</param>
+    /// <returns>Пользователь.</returns>
+    Task<Result<User>> GetUserByRefreshTokenAsync(RefreshTokenId refreshTokenId);
+    
+    /// <summary>
     /// Получение признака, что логин занят.
     /// </summary>
     /// <param name="login">Логин пользователя.</param>

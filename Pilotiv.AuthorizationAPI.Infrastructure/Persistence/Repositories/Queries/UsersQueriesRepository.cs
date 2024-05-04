@@ -125,6 +125,24 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     }
 
     /// <inheritdoc />
+    public async Task<Result<User>> GetUserByRefreshTokenAsync(RefreshTokenId refreshTokenId)
+    {
+        using var connection = _dbContext.CreateOpenedConnection();
+        const string sql = @"SELECT * From users u 
+            LEFT JOIN vk_users vku ON u.vk_user_id = vku.id 
+            LEFT JOIN refresh_tokens rt on u.id = rt.user_id   
+            WHERE rt.id = @RefreshTokenId";
+
+        var userDao = await QueryUserDaoAsync(connection, sql, new {RefreshTokenId = refreshTokenId.Value});
+        if (userDao is null)
+        {
+            return UsersErrors.UserNotFoundByRefreshTokenId(refreshTokenId);
+        }
+
+        return RestoreUserFromDao(userDao);
+    }
+
+    /// <inheritdoc />
     public async Task<Result<bool>> IsLoginOccupiedAsync(UserLogin login)
     {
         var connection = _dbContext.CreateOpenedConnection();

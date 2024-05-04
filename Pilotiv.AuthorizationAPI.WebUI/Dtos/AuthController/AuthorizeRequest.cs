@@ -1,4 +1,4 @@
-﻿namespace Pilotiv.AuthorizationAPI.WebUI.Dtos.Authorize;
+﻿namespace Pilotiv.AuthorizationAPI.WebUI.Dtos.AuthController;
 
 /// <summary>
 /// Объект переноса данных команды авторизации.

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Pilotiv.AuthorizationAPI.WebUI.Dtos.Register;
+namespace Pilotiv.AuthorizationAPI.WebUI.Dtos.AuthController;
 
 /// <summary>
 /// Объект переноса данных команды регистрации.
