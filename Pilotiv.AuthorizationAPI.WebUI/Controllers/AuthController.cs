@@ -6,6 +6,8 @@ using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.ObtainVkToken;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.ObtainVkToken.Dtos;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.RefreshTokens;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.RefreshTokens.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Register;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.RevokeRefreshToken;
 using Pilotiv.AuthorizationAPI.WebUI.Dtos.AuthController;
@@ -168,7 +170,7 @@ public class AuthController : ApiControllerBase
 
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
-            return BadRequest("Неверный параметр запроса.");
+            return BadRequest();
         }
 
         var command = new RevokeRefreshTokenCommand(refreshToken)
@@ -176,14 +178,50 @@ public class AuthController : ApiControllerBase
             Reason = reason,
             Ip = GetIpAddress()
         };
-        
+
         var commandResult = await Mediator.Send(command, cancellationToken);
         if (commandResult.IsFailed)
         {
-            return BadRequest("Ошибка при выполнении команды отзыва токена.");
+            return BadRequest();
         }
 
         return Ok();
+    }
+
+    /// <summary>
+    /// Обновление токенов.
+    /// </summary>
+    /// <param name="request">Объект переноса данных команды обновления токенов.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Объекта переноса данных ответа команды обновления токенов.</returns>
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RefreshTokensCommandResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [AllowAnonymous]
+    [HttpPost("refresh_tokens")]
+    public async Task<ActionResult<RefreshTokensCommandResponse>> RefreshTokensAsync(
+        [FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)]
+        RefreshTokensRequest? request = default,
+        CancellationToken cancellationToken = default)
+    {
+        var refreshToken = string.IsNullOrWhiteSpace(request?.RefreshToken)
+            ? Request.Cookies["refreshToken"]
+            : request.RefreshToken;
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return BadRequest();
+        }
+
+        var command = new RefreshTokensCommand(refreshToken)
+        {
+            Ip = GetIpAddress()
+        };
+        var commandResult = await Mediator.Send(command, cancellationToken);
+        if (commandResult.IsFailed)
+        {
+            return BadRequest();
+        }
+
+        return commandResult.ValueOrDefault;
     }
 
     /// <summary>

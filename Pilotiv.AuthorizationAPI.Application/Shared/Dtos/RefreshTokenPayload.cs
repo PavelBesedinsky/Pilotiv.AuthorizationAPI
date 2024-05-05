@@ -6,12 +6,12 @@
 public class RefreshTokenPayload
 {
     /// <summary>
-    /// Токен
+    /// Токен.
     /// </summary>
     public string? Token { get; init; }
 
     /// <summary>
-    /// Дата истечения
+    /// Дата истечения.
     /// </summary>
     public DateTime Expires { get; init;}
 }

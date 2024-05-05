@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Pilotiv.AuthorizationAPI.Application;
 using Pilotiv.AuthorizationAPI.Infrastructure;
 using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Extensions;
+using Pilotiv.AuthorizationAPI.Jwt;
 using Pilotiv.AuthorizationAPI.WebUI;
 using Pilotiv.AuthorizationAPI.WebUI.Extensions;
 
@@ -17,6 +18,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 
 builder.Host.UseHostExtensions();
 
+builder.AddJwtProviderAuthentication();
 builder.AddApplication();
 builder.AddInfrastructure();
 builder.AddPresentation();

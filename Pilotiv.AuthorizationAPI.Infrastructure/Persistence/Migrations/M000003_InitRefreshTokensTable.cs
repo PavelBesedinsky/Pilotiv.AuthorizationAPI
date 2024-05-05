@@ -10,7 +10,7 @@ public class M000003_InitRefreshTokensTable : AutoReversingMigration
     {
         Create
             .Table("refresh_tokens")
-            .WithColumn("id").AsString(255).NotNullable().PrimaryKey()
+            .WithColumn("id").AsString(88).NotNullable().PrimaryKey()
             .WithColumn("user_id").AsGuid().Nullable()
             .WithColumn("expiration_date").AsDateTime().Nullable()
             .WithColumn("created_date").AsDateTime().Nullable()

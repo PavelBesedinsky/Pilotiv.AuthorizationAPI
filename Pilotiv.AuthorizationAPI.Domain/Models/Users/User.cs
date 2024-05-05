@@ -205,4 +205,38 @@ public class User : AggregateRoot<UserId, Guid>
 
         return Result.Ok();
     }
+
+    /// <summary>
+    /// Отзыв токена.
+    /// </summary>
+    /// <param name="revokingToken">Отзываемый токен.</param>
+    /// <param name="ip">IP-адрес пользователя, запрашивающего отзыв токена.</param>
+    /// <param name="reason">Причина отзыва токена.</param>
+    /// <param name="replacingToken">Отзывающий токен.</param>
+    public Result RevokeToken(RefreshToken revokingToken, string ip, string reason, RefreshToken? replacingToken = null)
+    {
+        if (!_refreshTokens.Contains(revokingToken))
+        {
+            return UsersErrors.RevokingRefreshTokenNotFound(Id, revokingToken.Id);
+        }
+
+        var revokeTokenResult = revokingToken.RevokeToken(ip, reason, replacingToken);
+        if (revokeTokenResult.IsFailed)
+        {
+            return revokeTokenResult;
+        }
+
+        if (replacingToken is not null)
+        {
+            var addRefreshTokenResult = AddRefreshToken(replacingToken);
+            if (addRefreshTokenResult.IsFailed)
+            {
+                return addRefreshTokenResult;
+            }
+
+            AddDomainEvent(new UserRefreshTokenRevokedDomainEvent(Id, revokingToken, replacingToken));
+        }
+
+        return Result.Ok();
+    }
 }

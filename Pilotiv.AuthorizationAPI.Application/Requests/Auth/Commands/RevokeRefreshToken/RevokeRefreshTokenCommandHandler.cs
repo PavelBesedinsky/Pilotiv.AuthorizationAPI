@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
+using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.RevokeRefreshToken.Errors;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
@@ -42,16 +43,16 @@ public class RevokeRefreshTokenCommandHandler : IRequestHandler<RevokeRefreshTok
 
         var user = getUserResult.ValueOrDefault;
 
-        var refreshToken = user.RefreshTokens.SingleOrDefault(refreshToken => refreshToken.Id == refreshTokenId);
-        if (refreshToken is null)
+        var revokingToken = user.RefreshTokens.SingleOrDefault(refreshToken => refreshToken.Id == refreshTokenId);
+        if (revokingToken is null)
         {
-            return Result.Ok();
+            return RevokeRefreshTokenErrors.RevokingTokenNotFound(user, refreshTokenId);
         }
 
         var ip = request.Ip ?? "0.0.0.0";
         var reason = request.Reason ?? "Причина не указана";
-        
-        var revokeTokenResult = refreshToken.RevokeToken(ip, reason);
+
+        var revokeTokenResult = user.RevokeToken(revokingToken, ip, reason);
         if (revokeTokenResult.IsFailed)
         {
             return revokeTokenResult;

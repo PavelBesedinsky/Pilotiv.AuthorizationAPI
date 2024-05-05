@@ -46,8 +46,8 @@ public class RefreshTokenFactory : IEntityFactory<RefreshToken, RefreshTokenId>
             replacingRefreshToken = getReplacingTokenResult.ValueOrDefault;
         }
 
-        return RefreshToken.Restore(RefreshTokenId.Create(_payload.Id), _payload.ExpirationDate, _payload.CreatedDate,
-            _payload.RevokedDate, _payload.CreatedByIp ?? string.Empty, _payload.RevokedByIp, _payload.RevokeReason,
-            replacingRefreshToken);
+        return RefreshToken.Restore(RefreshTokenId.Create(_payload.Id), _payload.ExpirationDate,
+            _payload.CreatedDate, _payload.RevokedDate, _payload.CreatedByIp ?? string.Empty, _payload.RevokedByIp,
+            _payload.RevokeReason, replacingRefreshToken);
     }
 }

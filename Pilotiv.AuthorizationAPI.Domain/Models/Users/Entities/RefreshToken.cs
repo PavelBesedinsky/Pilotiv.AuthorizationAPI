@@ -71,8 +71,9 @@ public class RefreshToken : Entity<RefreshTokenId>
     /// <param name="revokedByIp">IP-адрес пользователя, запрашивающего отзыв токена.</param>
     /// <param name="revokeReason">Причина отзыва токена.</param>
     /// <param name="replacingToken">Токен обновления, заменяющий текущий токен.</param>
-    private RefreshToken(RefreshTokenId id, DateTime expirationDate, DateTime createdDate, DateTime revokedDate,
-        string createdByIp, string? revokedByIp, string? revokeReason, RefreshToken? replacingToken) : base(id)
+    private RefreshToken(RefreshTokenId id, DateTime expirationDate, DateTime createdDate,
+        DateTime revokedDate, string createdByIp, string? revokedByIp, string? revokeReason,
+        RefreshToken? replacingToken) : base(id)
     {
         ExpirationDate = expirationDate;
         CreatedDate = createdDate;
@@ -90,8 +91,8 @@ public class RefreshToken : Entity<RefreshTokenId>
     /// <param name="expirationDate">Дата истечения токена.</param>
     /// <param name="createdDate">Дата создания токена.</param>
     /// <param name="createdByIp">IP-адрес пользователя, запрашивающего создание токена.</param>
-    private RefreshToken(RefreshTokenId id, DateTime expirationDate, DateTime createdDate, string createdByIp) : this(
-        id, expirationDate, createdDate, DateTime.MinValue, createdByIp, null, null, null)
+    private RefreshToken(RefreshTokenId id, DateTime expirationDate, DateTime createdDate,
+        string createdByIp) : this(id, expirationDate, createdDate, DateTime.MinValue, createdByIp, null, null, null)
     {
     }
 
@@ -103,7 +104,8 @@ public class RefreshToken : Entity<RefreshTokenId>
     /// <param name="createdDate">Дата создания токена.</param>
     /// <param name="createdByIp">IP-адрес пользователя, запрашивающего создание токена.</param>
     /// <returns>Токен обновления.</returns>
-    public static Result<RefreshToken> Create(RefreshTokenId id, DateTime expirationDate, DateTime createdDate,
+    public static Result<RefreshToken> Create(RefreshTokenId id, DateTime expirationDate,
+        DateTime createdDate,
         string createdByIp)
     {
         var refreshToken = new RefreshToken(id, expirationDate, createdDate, createdByIp);
@@ -132,8 +134,8 @@ public class RefreshToken : Entity<RefreshTokenId>
         DateTime createdDate, DateTime revokedDate, string createdByIp, string? revokedByIp, string? revokeReason,
         RefreshToken? replacingToken)
     {
-        return new RefreshToken(id, expirationDate, createdDate, revokedDate, createdByIp, revokedByIp, revokeReason,
-            replacingToken);
+        return new RefreshToken(id, expirationDate, createdDate, revokedDate, createdByIp, revokedByIp,
+            revokeReason, replacingToken);
     }
 
     /// <summary>
@@ -142,7 +144,7 @@ public class RefreshToken : Entity<RefreshTokenId>
     /// <param name="ip">IP-адрес пользователя, запрашивающего отзыв токена.</param>
     /// <param name="reason">Причина отзыва токена.</param>
     /// <param name="replacingToken">Отзывающий токен.</param>
-    public Result RevokeToken(string ip, string reason, RefreshToken? replacingToken = null)
+    internal Result RevokeToken(string ip, string reason, RefreshToken? replacingToken = null)
     {
         if (IsRevoked)
         {

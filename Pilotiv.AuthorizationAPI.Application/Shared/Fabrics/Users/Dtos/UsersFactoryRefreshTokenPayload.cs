@@ -22,32 +22,32 @@ public class UsersFactoryRefreshTokenPayload
     /// <summary>
     /// Дата истечения токена.
     /// </summary>
-    public DateTime ExpirationDate { get; set; }
+    public DateTime ExpirationDate { get; init; }
 
     /// <summary>
     /// Дата создания токена.
     /// </summary>
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDate { get; init; }
 
     /// <summary>
     /// Дата отзыва токена.
     /// </summary>
-    public DateTime RevokedDate { get; set; }
+    public DateTime RevokedDate { get; init; }
 
     /// <summary>
     /// IP-адрес пользователя, запрашивающего создание токена.
     /// </summary>
-    public string? CreatedByIp { get; set; }
+    public string? CreatedByIp { get; init; }
 
     /// <summary>
     /// IP-адрес пользователя, запрашивающего отзыв токена.
     /// </summary>
-    public string? RevokedByIp { get; set; }
+    public string? RevokedByIp { get; init; }
 
     /// <summary>
     /// Причина отзыва токена.
     /// </summary>
-    public string? RevokeReason { get; set; }
+    public string? RevokeReason { get; init; }
 
     /// <summary>
     /// Токен обновления, заменяющий текущий токен.

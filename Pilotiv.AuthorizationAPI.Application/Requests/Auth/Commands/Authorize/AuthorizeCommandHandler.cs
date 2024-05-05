@@ -1,15 +1,11 @@
 ﻿using FluentResults;
 using MediatR;
-using Microsoft.Extensions.Options;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize.Dtos;
-using Pilotiv.AuthorizationAPI.Application.Shared.Dtos;
-using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
+using Pilotiv.AuthorizationAPI.Application.Shared.Helpers;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
-using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
-using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
-using Pilotiv.AuthorizationAPI.Jwt.Services;
+using Pilotiv.AuthorizationAPI.Jwt.Abstractions;
 
 namespace Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Authorize;
 
@@ -20,20 +16,20 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
 {
     private readonly IUsersCommandsRepository _usersCommandsRepository;
     private readonly IUsersQueriesRepository _usersQueriesRepository;
-    private readonly JwtProvider _jwtProvider;
+    private readonly IJwtProvider _jwtProvider;
 
     /// <summary>
     /// Создание обработчика команды авторизации.
     /// </summary>
-    /// <param name="authenticationKeysOption">Настройки сервиса авторизации.</param>
+    /// <param name="jwtProvider">Сервис работы с токенами.</param>
     /// <param name="usersCommandsRepository">Интерфейс репозитория команд пользователей.</param>
     /// <param name="usersQueriesRepository">Интерфейс репозитория запросов пользователей.</param>
-    public AuthorizeCommandHandler(IOptionsMonitor<AuthenticationKeysOption> authenticationKeysOption,
-        IUsersCommandsRepository usersCommandsRepository, IUsersQueriesRepository usersQueriesRepository)
+    public AuthorizeCommandHandler(IJwtProvider jwtProvider, IUsersCommandsRepository usersCommandsRepository,
+        IUsersQueriesRepository usersQueriesRepository)
     {
+        _jwtProvider = jwtProvider;
         _usersCommandsRepository = usersCommandsRepository;
         _usersQueriesRepository = usersQueriesRepository;
-        _jwtProvider = new JwtProvider(authenticationKeysOption);
     }
 
     /// <summary>
@@ -75,8 +71,8 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
 
         var user = getUserResult.ValueOrDefault;
 
-        var accessToken = GenerateAccessTokenForUser(user);
-        var createRefreshTokenResult = CreateRefreshToken(request.Ip);
+        var accessToken = TokensHelper.GenerateAccessTokenForUser(_jwtProvider, user);
+        var createRefreshTokenResult = TokensHelper.CreateRefreshToken(_jwtProvider, request.Ip);
         if (createRefreshTokenResult.IsFailed)
         {
             return createRefreshTokenResult.ToResult();
@@ -90,55 +86,15 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
         }
 
         await _usersCommandsRepository.CommitChangesAsync(user, cancellationToken);
-        
+
         return new AuthorizeCommandResponse
         {
             AccessToken = accessToken,
-            RefreshToken = new RefreshTokenPayload
+            RefreshToken = new()
             {
                 Token = refreshToken.Id.Value,
                 Expires = refreshToken.ExpirationDate
             }
         };
-    }
-
-    /// <summary>
-    /// Создание токена доступа для пользователя.
-    /// </summary>
-    /// <param name="user">Пользователь.</param>
-    /// <returns>Токен доступа.</returns>
-    private string GenerateAccessTokenForUser(User user)
-    {
-        return _jwtProvider.GenerateAccessToken(new()
-        {
-            ExpiringHours = 1,
-            Payload = new Dictionary<string, string>
-            {
-                {"email", user.Email.Value}
-            }
-        });
-    }
-    
-    /// <summary>
-    /// Создание токена обновления.
-    /// </summary>
-    /// <param name="ip">IP-адрес пользователя, с которого выполняется авторизация.</param>
-    /// <returns>Токен обновления.</returns>
-    private Result<Domain.Models.Users.Entities.RefreshToken> CreateRefreshToken(string? ip)
-    {
-        var refreshToken =_jwtProvider.GenerateRefreshToken(new()
-        {
-            ExpiringHours = 720,
-            Ip = ip
-        });
-        
-        var factory = new RefreshTokenFactory(new(refreshToken.Token)
-        {
-            ExpirationDate = refreshToken.Expires,
-            CreatedDate = refreshToken.Created,
-            CreatedByIp = refreshToken.CreatedByIp
-        });
-
-        return factory.Create();
     }
 }

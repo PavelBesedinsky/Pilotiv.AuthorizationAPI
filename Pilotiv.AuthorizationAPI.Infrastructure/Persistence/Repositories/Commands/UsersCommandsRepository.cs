@@ -25,34 +25,76 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     }
 
     /// <inheritdoc />
-    public async Task CommitChangesAsync(User value, CancellationToken cancellationToken)
+    public async Task CommitChangesAsync(User user, CancellationToken cancellationToken)
     {
         using var connection = _dbContext.CreateOpenedConnection();
         var trx = connection.BeginTransaction();
 
-        if (value.VkUser is not null)
+        if (user.VkUser is not null)
         {
-            await InvokeAsync(connection, trx, value.VkUser, DomainEventsHandlerAsync, cancellationToken);
+            await InvokeAsync(connection, trx, user.VkUser, VkUserDomainEventsHandlerAsync, cancellationToken);
         }
 
-        foreach (var refreshToken in value.RefreshTokens)
+        foreach (var refreshToken in user.RefreshTokens.Reverse())
         {
-            await InvokeAsync(connection, trx, refreshToken, DomainEventsHandlerAsync, cancellationToken);
+            await InvokeAsync(connection, trx, refreshToken, RefreshTokenDomainEventsHandlerAsync, cancellationToken);
         }
 
-        await InvokeAsync(connection, trx, value, DomainEventsHandlerAsync, cancellationToken);
+        await InvokeAsync(connection, trx, user, UserDomainEventsHandlerAsync, cancellationToken);
 
         trx.Commit();
     }
 
     /// <summary>
-    /// Обработчик доменного события.
+    /// Обработчик доменного события пользователя VK.
     /// </summary>
     /// <param name="connection">Соденинения.</param>
     /// <param name="transaction">Транзакция.</param>
     /// <param name="domainEvent">Доменное событие</param>
     /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
-    private Task DomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
+    private static Task VkUserDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
+        IDomainEvent domainEvent)
+    {
+        return domainEvent switch
+        {
+            VkUserCreatedDomainEvent dEvent => OnVkUserCreatedDomainEventAsync(dEvent, connection, transaction),
+            VkUserInternalIdChangedDomainEvent dEvent => OnVkUserInternalIdChangedDomainEventAsync(dEvent, connection, transaction),
+            _ => Task.CompletedTask
+        };
+    }
+
+    /// <summary>
+    /// Обработчик доменного события токена обновления.
+    /// </summary>
+    /// <param name="connection">Соденинения.</param>
+    /// <param name="transaction">Транзакция.</param>
+    /// <param name="domainEvent">Доменное событие</param>
+    /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
+    private static Task RefreshTokenDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
+        IDomainEvent domainEvent)
+    {
+        return domainEvent switch
+        {
+            RefreshTokenCreatedDomainEvent dEvent => OnRefreshTokenCreatedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenCreatedByIpChangedDomainEvent dEvent => OnRefreshTokenCreatedByIpChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenCreatedDateChangedDomainEvent dEvent => OnRefreshTokenCreatedDateChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenExpirationDateChangedDomainEvent dEvent => OnRefreshTokenExpirationDateChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenReplacingTokenChangedDomainEvent dEvent => OnRefreshTokenReplacingTokenChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenRevokedByIpChangedDomainEvent dEvent => OnRefreshTokenRevokedByIpChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenRevokedDateChangedDomainEvent dEvent => OnRefreshTokenRevokedDateChangedDomainEventAsync(dEvent, connection, transaction),
+            RefreshTokenRevokeReasonChangedDomainEvent dEvent => OnRefreshTokenRevokeReasonChangedDomainEventAsync(dEvent, connection, transaction),
+            _ => Task.CompletedTask
+        };
+    }
+
+    /// <summary>
+    /// Обработчик доменного события пользователя.
+    /// </summary>
+    /// <param name="connection">Соденинения.</param>
+    /// <param name="transaction">Транзакция.</param>
+    /// <param name="domainEvent">Доменное событие</param>
+    /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
+    private static Task UserDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
         IDomainEvent domainEvent)
     {
         return domainEvent switch
@@ -65,17 +107,7 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
             UserLoginChangedDomainEvent dEvent => OnUserLoginChangedDomainEventAsync(dEvent, connection, transaction),
             UserRefreshTokenAddedDomainEvent dEvent => OnUserRefreshTokenAddedDomainEventAsync(dEvent, connection, transaction),
             UserVkUserChangedDomainEvent dEvent => OnUserVkUserChangedDomainEventAsync(dEvent, connection, transaction),
-            VkUserCreatedDomainEvent dEvent => OnVkUserCreatedDomainEventAsync(dEvent, connection, transaction),
-            VkUserInternalIdChangedDomainEvent dEvent => OnVkUserInternalIdChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenCreatedDomainEvent dEvent => OnRefreshTokenCreatedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenCreatedByIpChangedDomainEvent dEvent => OnRefreshTokenCreatedByIpChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenCreatedDateChangedDomainEvent dEvent => OnRefreshTokenCreatedDateChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenExpirationDateChangedDomainEvent dEvent => OnRefreshTokenExpirationDateChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenReplacingTokenChangedDomainEvent dEvent => OnRefreshTokenReplacingTokenChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenRevokedByIpChangedDomainEvent dEvent => OnRefreshTokenRevokedByIpChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenRevokedDateChangedDomainEvent dEvent => OnRefreshTokenRevokedDateChangedDomainEventAsync(dEvent, connection, transaction),
-            RefreshTokenRevokeReasonChangedDomainEvent dEvent => OnRefreshTokenRevokeReasonChangedDomainEventAsync(dEvent, connection, transaction),
-            _ => throw new ArgumentOutOfRangeException(nameof(domainEvent))
+            _ => Task.CompletedTask
         };
     }
 
@@ -170,11 +202,12 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnUserRefreshTokenAddedDomainEventAsync(UserRefreshTokenAddedDomainEvent dEvent, IDbConnection connection,
+    private static Task OnUserRefreshTokenAddedDomainEventAsync(UserRefreshTokenAddedDomainEvent dEvent,
+        IDbConnection connection,
         IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET user_id = @UserId WHERE id = @Id";
-        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshToken.Id.Value, UserId = dEvent.UserId.Value}, 
+        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshToken.Id.Value, UserId = dEvent.UserId.Value},
             transaction);
     }
 
@@ -227,7 +260,8 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenCreatedDomainEventAsync(RefreshTokenCreatedDomainEvent dEvent, IDbConnection connection,
+    private static Task OnRefreshTokenCreatedDomainEventAsync(RefreshTokenCreatedDomainEvent dEvent,
+        IDbConnection connection,
         IDbTransaction transaction)
     {
         const string sql = @"INSERT INTO refresh_tokens (id) VALUES(@Id)";
@@ -240,11 +274,13 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenCreatedByIpChangedDomainEventAsync(RefreshTokenCreatedByIpChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenCreatedByIpChangedDomainEventAsync(
+        RefreshTokenCreatedByIpChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET created_by_ip = @CreatedByIp WHERE Id = @Id";
-        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshTokenId.Value, CreatedByIp = dEvent.Ip}, transaction);
+        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshTokenId.Value, CreatedByIp = dEvent.Ip},
+            transaction);
     }
 
     /// <summary>
@@ -253,7 +289,8 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenCreatedDateChangedDomainEventAsync(RefreshTokenCreatedDateChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenCreatedDateChangedDomainEventAsync(
+        RefreshTokenCreatedDateChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET created_date = @CreatedDate WHERE Id = @Id";
@@ -266,7 +303,8 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenExpirationDateChangedDomainEventAsync(RefreshTokenExpirationDateChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenExpirationDateChangedDomainEventAsync(
+        RefreshTokenExpirationDateChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET expiration_date = @ExpirationDate WHERE Id = @Id";
@@ -279,11 +317,13 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenReplacingTokenChangedDomainEventAsync(RefreshTokenReplacingTokenChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenReplacingTokenChangedDomainEventAsync(
+        RefreshTokenReplacingTokenChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET replacing_token_id = @ReplacingTokenId WHERE Id = @Id";
-        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshTokenId.Value, ReplacingTokenId = dEvent.ReplacingToken.Id.Value}, transaction);
+        return connection.ExecuteAsync(sql,
+            new {Id = dEvent.RefreshTokenId.Value, ReplacingTokenId = dEvent.ReplacingToken.Id.Value}, transaction);
     }
 
     /// <summary>
@@ -292,11 +332,13 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenRevokedByIpChangedDomainEventAsync(RefreshTokenRevokedByIpChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenRevokedByIpChangedDomainEventAsync(
+        RefreshTokenRevokedByIpChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET revoked_by_ip = @RevokedByIp WHERE Id = @Id";
-        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshTokenId.Value, RevokedByIp = dEvent.Ip}, transaction);
+        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshTokenId.Value, RevokedByIp = dEvent.Ip},
+            transaction);
     }
 
     /// <summary>
@@ -305,7 +347,8 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenRevokedDateChangedDomainEventAsync(RefreshTokenRevokedDateChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenRevokedDateChangedDomainEventAsync(
+        RefreshTokenRevokedDateChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET revoked_date = @RevokedDate WHERE Id = @Id";
@@ -318,10 +361,12 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     /// <param name="dEvent">Событие.</param>
     /// <param name="connection">Соединение.</param>
     /// <param name="transaction">Транзакция.</param>
-    private static Task OnRefreshTokenRevokeReasonChangedDomainEventAsync(RefreshTokenRevokeReasonChangedDomainEvent dEvent,
+    private static Task OnRefreshTokenRevokeReasonChangedDomainEventAsync(
+        RefreshTokenRevokeReasonChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"UPDATE refresh_tokens SET revoke_reason = @RevokeReason WHERE Id = @Id";
-        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshTokenId.Value, RevokeReason = dEvent.Reason}, transaction);
+        return connection.ExecuteAsync(sql, new {Id = dEvent.RefreshTokenId.Value, RevokeReason = dEvent.Reason},
+            transaction);
     }
 }
