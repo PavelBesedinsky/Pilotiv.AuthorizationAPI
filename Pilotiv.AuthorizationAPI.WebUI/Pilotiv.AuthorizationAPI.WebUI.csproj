@@ -8,6 +8,13 @@
       <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
       <Configurations>Debug;Release</Configurations>
       <Platforms>AnyCPU</Platforms>
+      <Title>Pilotiv Authorization API</Title>
+      <Description>Authorization API based on Json Web Tokens</Description>
+      <PackageProjectUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI</PackageProjectUrl>
+      <PackageLicenseUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI?tab=Apache-2.0-1-ov-file#readme</PackageLicenseUrl>
+      <RepositoryUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI</RepositoryUrl>
+      <AssemblyVersion>0.0.1.0</AssemblyVersion>
+      <FileVersion>0.0.1.0</FileVersion>
   </PropertyGroup>
 
     <ItemGroup>
