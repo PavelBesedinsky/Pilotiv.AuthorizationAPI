@@ -1,14 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+      <UserSecretsId>7f5f6c2b-a501-4ec3-baa5-4ce16296e8be</UserSecretsId>
+      <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+      <Configurations>Debug;Release</Configurations>
+      <Platforms>AnyCPU</Platforms>
+      <Title>Pilotiv Authorization API</Title>
+      <Description>Authorization API based on Json Web Tokens</Description>
+      <PackageProjectUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI</PackageProjectUrl>
+      <PackageLicenseUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI?tab=Apache-2.0-1-ov-file#readme</PackageLicenseUrl>
+      <RepositoryUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI</RepositoryUrl>
+      <AssemblyVersion>0.0.1.0</AssemblyVersion>
+      <FileVersion>0.0.1.0</FileVersion>
+  </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
-        <PackageReference Include="NSwag.AspNetCore" Version="14.0.3" />
+        <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
         <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />

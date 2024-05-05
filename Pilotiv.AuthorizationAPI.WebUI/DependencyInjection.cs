@@ -1,4 +1,5 @@
-﻿using Pilotiv.AuthorizationAPI.WebUI.Settings;
+﻿using Pilotiv.AuthorizationAPI.WebUI.Middlewares;
+using Pilotiv.AuthorizationAPI.WebUI.Settings;
 
 namespace Pilotiv.AuthorizationAPI.WebUI;
 
@@ -10,15 +11,21 @@ public static class DependencyInjection
     /// <summary>
     /// Добавление зависимостей слоя "Приложение"
     /// </summary>
-    /// <param name="services">Коллекция сервисов</param>
-    /// <returns>Коллекция сервисов</returns>
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    /// <param name="builder">Констуктор приложения.</param>
+    /// <returns>Конструктор приложения.</returns>
+    public static IHostApplicationBuilder AddPresentation(this IHostApplicationBuilder builder)
     {
-        services.AddControllers();
+        var services = builder.Services;
+
+        services.AddControllers()
+            .ConfigureApiBehaviorOptions(opt => { opt.SuppressMapClientErrors = true; });
         services.AddEndpointsApiExplorer();
 
         services.AddOpenApiDocument(OpenApiSettings.OpenApiDocument);
 
-        return services;
+        services.AddScoped<WebRootRedirectMiddleware>();
+        services.AddScoped<SwaggerAuthorizeMiddleware>();
+
+        return builder;
     }
 }

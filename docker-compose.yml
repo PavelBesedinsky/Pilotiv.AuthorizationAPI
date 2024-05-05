@@ -1,0 +1,26 @@
+﻿services:
+  pilotiv.authorizationapi.webui:
+    container_name: pilotiv_authorizationapi_webui
+    image: ghcr.io/pavelbesedinsky/auth.pilotiv:latest
+    build:
+      context: .
+      dockerfile: Pilotiv.AuthorizationAPI.WebUI/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Container
+      - ASPNETCORE_HTTP_PORTS=5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - pilotiv.authorizationapi.db
+
+  pilotiv.authorizationapi.db:
+    container_name: pilotiv_authorizationapi_db
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=pilotiv_authorizationapi_db
+    volumes:
+      - ./.containers/pilotiv_authorizationapi_db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

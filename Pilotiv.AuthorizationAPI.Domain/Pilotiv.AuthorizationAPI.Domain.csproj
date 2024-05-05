@@ -4,6 +4,12 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentResults" Version="3.15.2" />
+    </ItemGroup>
 
 </Project>

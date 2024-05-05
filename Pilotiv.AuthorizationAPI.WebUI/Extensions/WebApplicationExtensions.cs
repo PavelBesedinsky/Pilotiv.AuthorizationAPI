@@ -1,4 +1,4 @@
-﻿using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Context;
+﻿using Pilotiv.AuthorizationAPI.WebUI.Middlewares;
 using Pilotiv.AuthorizationAPI.WebUI.Settings;
 using Serilog;
 
@@ -14,18 +14,31 @@ public static class WebApplicationExtensions
     /// </summary>
     /// <param name="webApplication"><see cref="WebApplication"/>.</param>
     /// <returns><see cref="WebApplication"/>.</returns>
-    public static WebApplication UseWebApplicationExtension(this WebApplication webApplication)
+    public static WebApplication ConfigureWebApplication(this WebApplication webApplication)
     {
+        webApplication.UseCors(builder => builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+        webApplication.UseMiddleware<WebRootRedirectMiddleware>();
+        
         if (webApplication.Environment.IsDevelopment())
         {
             webApplication.UseOpenApi();
             webApplication.UseSwaggerUi();
-            webApplication.UseReDoc(ReDocSettings.Apply);
         }
+
+        if (webApplication.Environment.IsContainer())
+        {
+            webApplication.UseMiddleware<SwaggerAuthorizeMiddleware>();
+            webApplication.UseOpenApi();
+            webApplication.UseSwaggerUi();
+        }
+        
+        webApplication.UseReDoc(ReDocSettings.Apply);
 
         webApplication.UseSerilogRequestLogging();
         webApplication.MapControllers();
 
+        webApplication.UseStaticFiles();
+        
         webApplication.Lifetime.ApplicationStarted.Register(OnApplicationStarted, webApplication.Services);
 
         return webApplication;
@@ -37,14 +50,5 @@ public static class WebApplicationExtensions
         {
             return;
         }
-
-        await InitDataBaseAsync(serviceProvider);
-    }
-
-
-    private static Task InitDataBaseAsync(IServiceProvider serviceProvider)
-    {
-        var context = serviceProvider.GetRequiredService<DataContext>();
-        return context.InitAsync();
     }
 }
