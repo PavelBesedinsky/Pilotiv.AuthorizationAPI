@@ -32,12 +32,10 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     public async Task<Result<User>> GetUserByIdAsync(UserId userId)
     {
         using var connection = _dbContext.CreateOpenedConnection();
-
         const string sql = @"SELECT * From users u 
             LEFT JOIN vk_users vku ON u.vk_user_id = vku.id
             LEFT JOIN refresh_tokens rt on u.id = rt.user_id
             WHERE u.id = @Id";
-
 
         var userDao = await QueryUserDaoAsync(connection, sql, new {Id = userId.Value});
         if (userDao is null)
@@ -197,7 +195,8 @@ public class UsersQueriesRepository : IUsersQueriesRepository
         return users.GroupBy(entity => entity.Id).Select(entity =>
         {
             var user = entity.First();
-            user.RefreshTokens = entity.Select(item => item.RefreshTokens.Single()).ToList();
+            user.RefreshTokens = entity.Where(item => item.RefreshTokens.Any())
+                .Select(item => item.RefreshTokens.Single()).ToList();
             return user;
         }).SingleOrDefault();
     }
