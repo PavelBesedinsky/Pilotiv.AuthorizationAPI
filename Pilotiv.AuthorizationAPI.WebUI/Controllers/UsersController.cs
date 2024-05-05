@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pilotiv.AuthorizationAPI.Application.Requests.Users.Queries.GetUserById;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
@@ -24,6 +25,7 @@ public class UsersController : ApiControllerBase
     /// <param name="id">Идентификатор пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Пользователь.</returns>
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUserByIdAsync([FromRoute] Guid id,
         CancellationToken cancellationToken = default)
