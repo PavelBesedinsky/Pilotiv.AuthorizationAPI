@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Pilotiv.AuthorizationAPI.Jwt.Abstractions;
 using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
+using Pilotiv.AuthorizationAPI.Jwt.Services;
 
-namespace Pilotiv.AuthorizationAPI.JwtProvider.Tests.Unit.Services;
+namespace Pilotiv.AuthorizationAPI.Jwt.Tests.Unit.Services;
 
 public static class JwtUtilsFactory
 {
@@ -13,11 +15,11 @@ public static class JwtUtilsFactory
     /// </summary>
     /// <param name="path">Путь к файлу конфигурации.</param>
     /// <returns>Сервис работы с JWT.</returns>
-    public static Jwt.Services.JwtProvider Create(string path)
+    public static IJwtProvider Create(string path)
     {
         var serviceCollection = new ServiceCollection();
         serviceCollection.AddOptions();
-        
+
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile(path)
@@ -31,7 +33,7 @@ public static class JwtUtilsFactory
 
         var authenticationKeysOption = services.GetService<IOptionsMonitor<AuthenticationKeysOption>>();
         Assert.NotNull(authenticationKeysOption);
-        
-        return new Jwt.Services.JwtProvider(authenticationKeysOption);
+
+        return new JwtProvider(authenticationKeysOption);
     }
 }

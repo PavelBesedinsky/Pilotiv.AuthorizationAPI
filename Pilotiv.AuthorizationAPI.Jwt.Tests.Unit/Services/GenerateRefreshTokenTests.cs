@@ -1,6 +1,6 @@
 ﻿using Pilotiv.AuthorizationAPI.Jwt.Entities;
 
-namespace Pilotiv.AuthorizationAPI.JwtProvider.Tests.Unit.Services;
+namespace Pilotiv.AuthorizationAPI.Jwt.Tests.Unit.Services;
 
 /// <summary>
 /// Тесты создания токена обновления.

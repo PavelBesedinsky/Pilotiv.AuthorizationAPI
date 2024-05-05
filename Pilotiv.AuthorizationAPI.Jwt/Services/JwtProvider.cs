@@ -6,16 +6,16 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Pilotiv.AuthorizationAPI.Jwt.Abstractions;
 using Pilotiv.AuthorizationAPI.Jwt.Certificates;
 using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
 using Pilotiv.AuthorizationAPI.Jwt.Entities;
-using Pilotiv.AuthorizationAPI.Jwt.Interfaces;
 using Pilotiv.AuthorizationAPI.Jwt.Properties;
 
 namespace Pilotiv.AuthorizationAPI.Jwt.Services;
 
 /// <summary>
-/// Сервис работы с JWT.
+/// Сервис работы с токенами.
 /// </summary>
 public class JwtProvider : IJwtProvider
 {

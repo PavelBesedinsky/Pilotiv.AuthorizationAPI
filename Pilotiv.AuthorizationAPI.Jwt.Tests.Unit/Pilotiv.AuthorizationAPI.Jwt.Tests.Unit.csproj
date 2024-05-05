@@ -7,7 +7,7 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
-        <RootNamespace>Pilotiv.AuthorizationAPI.JwtProvider.Tests.Unit</RootNamespace>
+        <RootNamespace>Pilotiv.AuthorizationAPI.Jwt.Tests.Unit</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

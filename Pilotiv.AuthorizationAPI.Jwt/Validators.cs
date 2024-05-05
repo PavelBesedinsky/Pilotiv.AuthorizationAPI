@@ -6,7 +6,7 @@ namespace Pilotiv.AuthorizationAPI.Jwt;
 /// <summary>
 /// Валидаторы.
 /// </summary>
-internal static class Validators
+public static class Validators
 {
     /// <summary>
     /// Выполнение валидации времени жизни токена.
@@ -15,7 +15,7 @@ internal static class Validators
     /// <param name="expires">Дата конца жизни токена.</param>
     /// <param name="securityToken">Токен.</param>
     /// <param name="validationParameters">Параметры валидации.</param>
-    internal static bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
+    public static bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
         TokenValidationParameters validationParameters)
     {
         return expires != null && expires > DateTime.UtcNow;
