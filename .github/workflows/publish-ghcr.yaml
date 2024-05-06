@@ -10,6 +10,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build and push the Image
         run: |
-          docker login --username pavelbesedinsky --password ${{ secrets.GH_PAT }} ghcr.io
+          docker login --username pavelbesedinsky --password ${{ secrets.GH_DOCKER_PAT }} ghcr.io
           docker build . --tag ghcr.io/pavelbesedinsky/auth.pilotiv:latest
           docker push ghcr.io/pavelbesedinsky/auth.pilotiv:latest
