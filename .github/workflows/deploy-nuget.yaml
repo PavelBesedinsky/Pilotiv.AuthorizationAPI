@@ -1,0 +1,29 @@
+﻿name: Publish Nuget Packages
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  REPOSITORY: pavelbesedinsky
+  USERNAME: pavelbesedinsky
+  PACKAGE_NAME: 'Pilotiv.AuthorizationAPI.Jwt/bin/Debug/Pilotiv.AuthorizationAPI.Jwt.${{ github.REF_NAME }}.nupkg'
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Upload packages
+        run: |
+          dotnet nuget add source --username ${{ env.USERNAME }} --password ${{ secrets.GH_NUGET_PAT }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ env.REPOSITORY }}/index.json"
+          dotnet nuget push ${{ env.PACKAGE_NAME }} --api-key ${{ secrets.GH_NUGET_PAT }} --source "github" --skip-duplicate
