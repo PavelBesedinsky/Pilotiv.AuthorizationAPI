@@ -1,0 +1,25 @@
+﻿name: Publish Docker Container
+on:
+  push:
+    branches: [ master, develop ]
+    tags:
+      - '*'
+  pull_request:
+    branches: [ master, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: auth.pilotiv:latest
+  REPOSITORY: pavelbesedinsky
+  USERNAME: pavelbesedinsky
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and push the Image
+        run: |
+          docker login --username ${{ env.USERNAME }} --password ${{ secrets.GH_DOCKER_PAT }} ${{ env.REGISTRY }}
+          docker build . --tag ${{ env.REGISTRY }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}
+          docker push ${{ env.REGISTRY }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}

@@ -4,6 +4,12 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Pilotiv Authorization API</Title>
+        <Description>Authorization Tools to generate and validate access and refresh tokens.</Description>
+        <PackageLicenseUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI?tab=Apache-2.0-1-ov-file#</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI</RepositoryUrl>
+        <Version>1.0.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
