@@ -1,8 +1,9 @@
 ﻿using FluentResults;
 using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
-using Pilotiv.AuthorizationAPI.Domain.Models.Users.Entities;
 using Pilotiv.AuthorizationAPI.Jwt.Abstractions;
+using Pilotiv.AuthorizationAPI.Jwt.Entities;
+using RefreshToken = Pilotiv.AuthorizationAPI.Domain.Models.Users.Entities.RefreshToken;
 
 namespace Pilotiv.AuthorizationAPI.Application.Shared.Helpers;
 
@@ -19,14 +20,17 @@ internal static class TokensHelper
     /// <returns>Токен доступа.</returns>
     internal static string GenerateAccessTokenForUser(IJwtProvider jwtProvider, User user)
     {
-        return jwtProvider.GenerateAccessToken(new()
+        AccessTokenConfiguration configuration = new()
         {
-            ExpiringHours = 1,
-            Payload = new Dictionary<string, string>
+            NotBefore = DateTime.UtcNow,
+            Expires = DateTime.UtcNow.AddMinutes(15),
+            Claims = new()
             {
                 {"email", user.Email.Value}
             }
-        });
+        };
+        
+        return jwtProvider.GenerateAccessToken(configuration);
     }
 
     /// <summary>
@@ -38,11 +42,13 @@ internal static class TokensHelper
     internal static Result<RefreshToken> CreateRefreshToken(IJwtProvider jwtProvider,
         string? ip)
     {
-        var refreshToken = jwtProvider.GenerateRefreshToken(new()
+        RefreshTokenConfiguration configuration = new()
         {
-            ExpiringHours = 720,
+            Expires = DateTime.UtcNow.AddDays(1),
             Ip = ip
-        });
+        };
+        
+        var refreshToken = jwtProvider.GenerateRefreshToken(configuration);
 
         var factory = new RefreshTokenFactory(new(refreshToken.Token)
         {

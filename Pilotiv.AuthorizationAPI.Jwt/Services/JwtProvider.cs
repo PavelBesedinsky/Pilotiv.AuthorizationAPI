@@ -17,7 +17,7 @@ namespace Pilotiv.AuthorizationAPI.Jwt.Services;
 /// <summary>
 /// Сервис работы с токенами.
 /// </summary>
-public class JwtProvider : IJwtProvider
+internal class JwtProvider : IJwtProvider
 {
     private readonly AuthenticationKeysOption _options;
 
@@ -25,7 +25,7 @@ public class JwtProvider : IJwtProvider
     /// Сервис работы с JWT.
     /// </summary>
     /// <param name="options">Опция для генерации и валидации ключей доступа.</param>
-    public JwtProvider(IOptionsMonitor<AuthenticationKeysOption> options)
+    internal JwtProvider(IOptionsMonitor<AuthenticationKeysOption> options)
     {
         _options = options.CurrentValue;
     }
@@ -34,9 +34,9 @@ public class JwtProvider : IJwtProvider
     public string GenerateAccessToken(AccessTokenConfiguration configuration)
     {
         var tokenDescriptor = GetTokenDescriptor(configuration, _options);
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
 
+        JwtSecurityTokenHandler tokenHandler = new();
+        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(securityToken);
     }
 
@@ -50,19 +50,18 @@ public class JwtProvider : IJwtProvider
                 nameof(AuthenticationKeysOption.AuthenticationKeys)));
         }
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-
         var tokenValidationParameters = GetTokenValidationParameters(publicKey);
 
         try
         {
+            JwtSecurityTokenHandler tokenHandler = new();
             tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
 
             if (securityToken is not JwtSecurityToken jwtSecurityToken)
             {
                 return Enumerable.Empty<Claim>();
             }
-            
+
             return jwtSecurityToken.Claims;
         }
         catch
@@ -74,25 +73,23 @@ public class JwtProvider : IJwtProvider
     /// <inheritdoc />
     public RefreshToken GenerateRefreshToken(RefreshTokenConfiguration configuration)
     {
-        var currentDate = DateTime.UtcNow;
-
         var randomNumber = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
 
         var refreshToken = new RefreshToken(Convert.ToBase64String(randomNumber),
-            currentDate.AddHours(configuration.ExpiringHours), currentDate, configuration.Ip ?? string.Empty);
+            configuration.Expires, DateTime.UtcNow, configuration.Ip ?? string.Empty);
 
         return refreshToken;
     }
 
     /// <summary>
-    /// Получение дескриптера токена.
+    /// Получение дескриптора токена.
     /// </summary>
-    /// <param name="configuration">Конфигурация токена.</param>
+    /// <param name="accessTokenConfiguration">Конфигурация токена.</param>
     /// <param name="options">Опция для генерации и валидации ключей доступа.</param>
-    /// <returns>Дескриптер токена.</returns>
-    private static SecurityTokenDescriptor GetTokenDescriptor(AccessTokenConfiguration configuration,
+    /// <returns>Дескриптор токена.</returns>
+    private static SecurityTokenDescriptor GetTokenDescriptor(AccessTokenConfiguration accessTokenConfiguration,
         AuthenticationKeysOption options)
     {
         var privateKey = options.PrivateKey;
@@ -102,15 +99,18 @@ public class JwtProvider : IJwtProvider
                 nameof(AuthenticationKeysOption.AuthenticationKeys)));
         }
 
-        var signingAudienceCertificate = new SigningAudienceCertificate();
+        SigningAudienceCertificate signingAudienceCertificate = new();
         var audienceSigningKey = signingAudienceCertificate.GetAudienceSigningKey(privateKey);
 
-        var claims = configuration.Payload.Select(item => new Claim(item.Key, item.Value));
+        var claims = accessTokenConfiguration.Claims.Select(item => new Claim(item.Key, item.Value));
 
-        var tokenDescriptor = new SecurityTokenDescriptor
+        SecurityTokenDescriptor tokenDescriptor = new()
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddHours(configuration.ExpiringHours),
+            NotBefore = accessTokenConfiguration.NotBefore,
+            Expires = accessTokenConfiguration.Expires,
+            Issuer = options.Issuer,
+            Audience = options.Audience,
             SigningCredentials = audienceSigningKey
         };
 
@@ -121,19 +121,24 @@ public class JwtProvider : IJwtProvider
     /// Получение параметров валидации токена.
     /// </summary>
     /// <param name="publicKey">Публичный ключ валидации токена.</param>
+    /// <param name="issuer">Создатель ключа.</param>
+    /// <param name="audience">Потребитель ключа.</param>
     /// <returns>Параметры валидации токена.</returns>
-    private static TokenValidationParameters GetTokenValidationParameters(string publicKey)
+    public static TokenValidationParameters GetTokenValidationParameters(string publicKey, string? issuer = null,
+        string? audience = null)
     {
-        var issuerSigningCertificate = new SigningIssuerCertificate();
+        SigningIssuerCertificate issuerSigningCertificate = new();
         var issuerSigningKey = issuerSigningCertificate.GetIssuerSingingKey(publicKey);
 
         return new TokenValidationParameters
         {
-            ValidateAudience = false,
-            ValidateIssuer = false,
+            ValidateAudience = audience is not null,
+            ValidateIssuer = issuer is not null,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = issuerSigningKey,
-            LifetimeValidator = Validators.LifetimeValidator
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            LifetimeValidator = TokenValidators.LifetimeValidator
         };
     }
 }

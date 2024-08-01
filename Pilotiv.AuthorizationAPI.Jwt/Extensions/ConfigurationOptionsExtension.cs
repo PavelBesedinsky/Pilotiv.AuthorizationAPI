@@ -5,12 +5,12 @@ using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
 namespace Pilotiv.AuthorizationAPI.Jwt.Extensions;
 
 /// <summary>
-/// Расширение добавления опций конфигурации.
+/// Расширение добавления настроек.
 /// </summary>
 internal static class ConfigurationOptionsExtension
 {
     /// <summary>
-    /// Добавление пользовательский опций конфигурации.
+    /// Добавление настроек для генерации и валидации ключей доступа..
     /// </summary>
     /// <param name="services">Коллекция сервисов.</param>
     /// <param name="configuration">Конфигурация.</param>

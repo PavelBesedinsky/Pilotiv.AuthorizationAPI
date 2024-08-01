@@ -19,4 +19,14 @@ public class AuthenticationKeysOption
     /// Приватный ключ.
     /// </summary>
     public string? PrivateKey { get; init; }
+
+    /// <summary>
+    /// Создатель ключа.
+    /// </summary>
+    public string? Issuer { get; init; }
+
+    /// <summary>
+    /// Потребитель ключа.
+    /// </summary>
+    public string? Audience { get; init; }
 }
