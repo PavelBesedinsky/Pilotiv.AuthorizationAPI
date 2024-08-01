@@ -1,4 +1,8 @@
-﻿namespace Pilotiv.AuthorizationAPI.WebUI.Middlewares;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+namespace Pilotiv.AuthorizationAPI.WebUI.Middlewares;
 
 /// <summary>
 /// Компонент Middleware переадресации к WebRoot.

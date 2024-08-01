@@ -1,4 +1,6 @@
-﻿using Pilotiv.AuthorizationAPI.Application.Shared.Options;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Pilotiv.AuthorizationAPI.Application.Shared.Options;
 using Pilotiv.AuthorizationAPI.Infrastructure.Options;
 using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
 

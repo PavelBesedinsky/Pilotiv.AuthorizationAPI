@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Pilotiv.AuthorizationAPI.WebUI.Extensions;
 
