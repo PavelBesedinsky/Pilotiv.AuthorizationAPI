@@ -46,11 +46,11 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     }
 
     /// <summary>
-    /// Обработчик доменного события пользователя VK.
+    /// Обработчик событий пользователя VK.
     /// </summary>
     /// <param name="connection">Соденинения.</param>
     /// <param name="transaction">Транзакция.</param>
-    /// <param name="domainEvent">Доменное событие</param>
+    /// <param name="domainEvent">Доменное событие.</param>
     /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
     private static Task VkUserDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
         IDomainEvent domainEvent)
@@ -64,11 +64,11 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     }
 
     /// <summary>
-    /// Обработчик доменного события токена обновления.
+    /// Обработчик событий токена обновления.
     /// </summary>
     /// <param name="connection">Соденинения.</param>
     /// <param name="transaction">Транзакция.</param>
-    /// <param name="domainEvent">Доменное событие</param>
+    /// <param name="domainEvent">Доменное событие.</param>
     /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
     private static Task RefreshTokenDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
         IDomainEvent domainEvent)
@@ -88,11 +88,11 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     }
 
     /// <summary>
-    /// Обработчик доменного события пользователя.
+    /// Обработчик событий пользователя.
     /// </summary>
     /// <param name="connection">Соденинения.</param>
     /// <param name="transaction">Транзакция.</param>
-    /// <param name="domainEvent">Доменное событие</param>
+    /// <param name="domainEvent">Доменное событие.</param>
     /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
     private static Task UserDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
         IDomainEvent domainEvent)
