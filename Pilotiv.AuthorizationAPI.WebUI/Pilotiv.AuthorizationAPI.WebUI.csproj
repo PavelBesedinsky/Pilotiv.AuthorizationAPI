@@ -11,15 +11,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NSwag.AspNetCore" Version="14.0.7"/>
-        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1"/>
-        <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
+        <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
+        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Pilotiv.AuthorizationAPI.Application\Pilotiv.AuthorizationAPI.Application.csproj"/>
-        <ProjectReference Include="..\Pilotiv.AuthorizationAPI.Infrastructure\Pilotiv.AuthorizationAPI.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Pilotiv.AuthorizationAPI.Application\Pilotiv.AuthorizationAPI.Application.csproj" />
+        <ProjectReference Include="..\Pilotiv.AuthorizationAPI.Infrastructure\Pilotiv.AuthorizationAPI.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
