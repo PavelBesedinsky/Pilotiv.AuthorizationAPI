@@ -4,11 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Pilotiv.AuthorizationAPI.Jwt.Abstractions;
 using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
+using Pilotiv.AuthorizationAPI.Jwt.Factories;
 using Pilotiv.AuthorizationAPI.Jwt.Services;
 
 namespace Pilotiv.AuthorizationAPI.Jwt.Tests.Unit.Services;
 
-public static class JwtUtilsFactory
+/// <summary>
+/// Фабрика сервиса работы с JWT.
+/// </summary>
+public static class JwtProviderFactory
 {
     /// <summary>
     /// Создание сервиса работы с JWT.
@@ -34,6 +38,6 @@ public static class JwtUtilsFactory
         var authenticationKeysOption = services.GetService<IOptionsMonitor<AuthenticationKeysOption>>();
         Assert.NotNull(authenticationKeysOption);
 
-        return new JwtProvider(authenticationKeysOption);
+        return Factories.JwtProviderFactory.CreateJwtProvider(authenticationKeysOption);
     }
 }

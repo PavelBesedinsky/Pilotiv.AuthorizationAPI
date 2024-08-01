@@ -25,7 +25,7 @@ internal class JwtProvider : IJwtProvider
     /// Сервис работы с JWT.
     /// </summary>
     /// <param name="options">Опция для генерации и валидации ключей доступа.</param>
-    internal JwtProvider(IOptionsMonitor<AuthenticationKeysOption> options)
+    public JwtProvider(IOptionsMonitor<AuthenticationKeysOption> options)
     {
         _options = options.CurrentValue;
     }

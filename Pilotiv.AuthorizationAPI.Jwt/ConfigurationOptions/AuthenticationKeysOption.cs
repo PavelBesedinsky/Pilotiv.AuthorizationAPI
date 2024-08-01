@@ -1,7 +1,7 @@
 ﻿namespace Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
 
 /// <summary>
-/// Опция для генерации и валидации ключей доступа.
+/// Настройки генерации и валидации ключей доступа.
 /// </summary>
 public class AuthenticationKeysOption
 {
