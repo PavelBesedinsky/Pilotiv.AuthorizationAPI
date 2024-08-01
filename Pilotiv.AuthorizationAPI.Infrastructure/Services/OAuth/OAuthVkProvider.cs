@@ -4,7 +4,7 @@ using System.Text.Json;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 using Pilotiv.AuthorizationAPI.Application.Shared.Dtos;
-using Pilotiv.AuthorizationAPI.Application.Shared.Services.OAuthVkProvider;
+using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 using Pilotiv.AuthorizationAPI.Infrastructure.Services.OAuth.Errors;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Services.OAuth;

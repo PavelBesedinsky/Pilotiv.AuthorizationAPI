@@ -9,7 +9,7 @@ using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Shared.Options;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
-using Pilotiv.AuthorizationAPI.Application.Shared.Services.OAuthVkProvider;
+using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
 

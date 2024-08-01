@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using Pilotiv.AuthorizationAPI.Application.Shared.Dtos;
 
-namespace Pilotiv.AuthorizationAPI.Application.Shared.Services.OAuthVkProvider;
+namespace Pilotiv.AuthorizationAPI.Application.Shared.Services;
 
 /// <summary>
 /// Интерфейс взаимодействия с сервисом авторизации VK. 
