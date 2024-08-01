@@ -5,6 +5,7 @@ using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
 using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
+using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
 
 namespace Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Register;
@@ -14,17 +15,20 @@ namespace Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Register;
 /// </summary>
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
 {
+    private readonly IPasswordProvider _passwordProvider;
     private readonly IUsersCommandsRepository _usersCommandsRepository;
     private readonly IUsersQueriesRepository _usersQueriesRepository;
 
     /// <summary>
     /// Создание обработчика команды регистрации.
     /// </summary>
+    /// <param name="passwordProvider">Сервис генерации и валидации паролей.</param>
     /// <param name="usersCommandsRepository">Интерфейс репозитория команд пользователей.</param>
     /// <param name="usersQueriesRepository">Интерфейс репозитория запросов пользователей.</param>
-    public RegisterCommandHandler(IUsersCommandsRepository usersCommandsRepository,
+    public RegisterCommandHandler(IPasswordProvider passwordProvider, IUsersCommandsRepository usersCommandsRepository,
         IUsersQueriesRepository usersQueriesRepository)
     {
+        _passwordProvider = passwordProvider;
         _usersCommandsRepository = usersCommandsRepository;
         _usersQueriesRepository = usersQueriesRepository;
     }
@@ -59,9 +63,12 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
             return Result.Fail(errors);
         }
 
-        var usersFabric = new UserFactory(new UsersFactoryUserPayload
+        var hashPassword = _passwordProvider.HashPassword(request.Password, out var salt);
+        
+        UserFactory usersFabric = new(new UsersFactoryUserPayload
         {
-            PasswordHash = request.Password,
+            PasswordHash = hashPassword,
+            Salt = Convert.ToHexString(salt),
             Email = request.Email,
             Login = request.Login,
             RegistrationDate = DateTime.UtcNow,
@@ -102,7 +109,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
         {
             return RegisterErrors.LoginIsOccupied(getUserLoginResult.ValueOrDefault);
         }
-        
+
         return Result.Ok();
     }
 
@@ -129,7 +136,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
         {
             return RegisterErrors.EmailIsOccupied(getUserEmailResult.ValueOrDefault);
         }
-        
+
         return Result.Ok();
     }
 }

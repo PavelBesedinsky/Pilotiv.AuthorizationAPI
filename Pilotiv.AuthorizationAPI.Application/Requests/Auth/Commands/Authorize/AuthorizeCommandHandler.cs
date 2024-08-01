@@ -41,29 +41,15 @@ public class AuthorizeCommandHandler : IRequestHandler<AuthorizeCommand, Result<
     public async Task<Result<AuthorizeCommandResponse>> Handle(AuthorizeCommand request,
         CancellationToken cancellationToken = default)
     {
-        List<IError> errors = new();
-
         var getUserLoginResult = UserLogin.Create(request.Login);
         if (getUserLoginResult.IsFailed)
         {
-            errors.AddRange(getUserLoginResult.Errors);
+            return Result.Fail(getUserLoginResult.Errors);
         }
-
-        var getUserPasswordResult = UserPasswordHash.Create(request.Password);
-        if (getUserPasswordResult.IsFailed)
-        {
-            errors.AddRange(getUserPasswordResult.Errors);
-        }
-
-        if (errors.Any())
-        {
-            return Result.Fail(errors);
-        }
-
+        
         var userLogin = getUserLoginResult.ValueOrDefault;
-        var userPassword = getUserPasswordResult.ValueOrDefault;
 
-        var getUserResult = await _usersQueriesRepository.GetUserByLoginPasswordAsync(userLogin, userPassword);
+        var getUserResult = await _usersQueriesRepository.GetUserByLoginPasswordAsync(userLogin, request.Password);
         if (getUserResult.IsFailed)
         {
             return getUserResult.ToResult();

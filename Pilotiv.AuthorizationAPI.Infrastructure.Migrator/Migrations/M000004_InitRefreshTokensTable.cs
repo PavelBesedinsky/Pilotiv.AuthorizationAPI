@@ -3,8 +3,8 @@ using FluentMigrator;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
 
-[Migration(3, "Initializing refresh_tokens table.")]
-public class M000003_InitRefreshTokensTable : AutoReversingMigration
+[Migration(4, "Initializing refresh_tokens table.")]
+public class M000004_InitRefreshTokensTable : AutoReversingMigration
 {
     public override void Up()
     {

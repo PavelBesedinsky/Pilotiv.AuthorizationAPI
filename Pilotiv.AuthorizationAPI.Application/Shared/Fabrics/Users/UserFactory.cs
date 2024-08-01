@@ -26,13 +26,13 @@ public class UserFactory : IEntityFactory<User, UserId>
     public Result<User> Create()
     {
         // Получение хэша-пароля пользователя.
-        UserPasswordHash? passwordHash = null;
+        UserPassword? passwordHash = null;
         if (!string.IsNullOrWhiteSpace(_payload.PasswordHash))
         {
-            var getPasswordHashResult = UserPasswordHash.Create(_payload.PasswordHash);
+            var getPasswordHashResult = UserPassword.Create(_payload.PasswordHash, _payload.Salt ?? string.Empty);
             if (getPasswordHashResult.IsFailed)
             {
-                return getPasswordHashResult.ToResult();
+                return Result.Fail(getPasswordHashResult.Errors);
             }
 
             passwordHash = getPasswordHashResult.ValueOrDefault;
@@ -42,7 +42,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var getUserEmailResult = UserEmail.Create(_payload.Email ?? string.Empty);
         if (getUserEmailResult.IsFailed)
         {
-            return getUserEmailResult.ToResult();
+            return Result.Fail(getUserEmailResult.Errors);
         }
 
         var email = getUserEmailResult.ValueOrDefault;
@@ -51,7 +51,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var getUserRegistrationDate = UserRegistrationDate.Create(_payload.RegistrationDate);
         if (getUserRegistrationDate.IsFailed)
         {
-            return getUserRegistrationDate.ToResult();
+            return Result.Fail(getUserRegistrationDate.Errors);
         }
 
         var registrationDate = getUserRegistrationDate.ValueOrDefault;
@@ -60,7 +60,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var getUserAuthorizationDateResult = UserAuthorizationDate.Create(_payload.AuthorizationDate);
         if (getUserAuthorizationDateResult.IsFailed)
         {
-            return getUserAuthorizationDateResult.ToResult();
+            return Result.Fail(getUserAuthorizationDateResult.Errors);
         }
 
         var authorizationDate = getUserAuthorizationDateResult.ValueOrDefault;
@@ -72,7 +72,7 @@ public class UserFactory : IEntityFactory<User, UserId>
             var getUserLoginResult = UserLogin.Create(_payload.Login);
             if (getUserLoginResult.IsFailed)
             {
-                return getUserLoginResult.ToResult();
+                return Result.Fail(getUserLoginResult.Errors);
             }
 
             login = getUserLoginResult.ValueOrDefault;
@@ -82,7 +82,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var createUserResult = User.Create(passwordHash, email, registrationDate, authorizationDate, login);
         if (createUserResult.IsFailed)
         {
-            return createUserResult.ToResult();
+            return Result.Fail(createUserResult.Errors);
         }
 
         var user = createUserResult.ValueOrDefault;
@@ -95,13 +95,13 @@ public class UserFactory : IEntityFactory<User, UserId>
             var getVkUserResult = vkUserFactory.Create();
             if (getVkUserResult.IsFailed)
             {
-                return getVkUserResult.ToResult();
+                return Result.Fail(getVkUserResult.Errors);
             }
 
             var addVkUserResult = user.AddVkUser(getVkUserResult.ValueOrDefault);
             if (addVkUserResult.IsFailed)
             {
-                return addVkUserResult;
+                return Result.Fail(addVkUserResult.Errors);
             }
         }
 
@@ -113,13 +113,13 @@ public class UserFactory : IEntityFactory<User, UserId>
             var createRefreshTokenResult = refreshTokenFactory.Create();
             if (createRefreshTokenResult.IsFailed)
             {
-                return createRefreshTokenResult.ToResult();
+                return Result.Fail(createRefreshTokenResult.Errors);
             }
 
             var addRefreshTokenResult = user.AddRefreshToken(createRefreshTokenResult.ValueOrDefault);
             if (addRefreshTokenResult.IsFailed)
             {
-                return addRefreshTokenResult;
+                return Result.Fail(addRefreshTokenResult.Errors);
             }
         }
 
@@ -131,13 +131,13 @@ public class UserFactory : IEntityFactory<User, UserId>
     public Result<User> Restore()
     {
         // Получение хэша-пароля пользователя.
-        UserPasswordHash? passwordHash = null;
+        UserPassword? passwordHash = null;
         if (!string.IsNullOrWhiteSpace(_payload.PasswordHash))
         {
-            var getPasswordHashResult = UserPasswordHash.Create(_payload.PasswordHash);
+            var getPasswordHashResult = UserPassword.Create(_payload.PasswordHash, _payload.Salt ?? string.Empty);
             if (getPasswordHashResult.IsFailed)
             {
-                return getPasswordHashResult.ToResult();
+                return Result.Fail(getPasswordHashResult.Errors);
             }
 
             passwordHash = getPasswordHashResult.ValueOrDefault;
@@ -147,7 +147,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var getUserEmailResult = UserEmail.Create(_payload.Email ?? string.Empty);
         if (getUserEmailResult.IsFailed)
         {
-            return getUserEmailResult.ToResult();
+            return Result.Fail(getUserEmailResult.Errors);
         }
 
         var email = getUserEmailResult.ValueOrDefault;
@@ -156,7 +156,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var getUserRegistrationDate = UserRegistrationDate.Create(_payload.RegistrationDate);
         if (getUserRegistrationDate.IsFailed)
         {
-            return getUserRegistrationDate.ToResult();
+            return Result.Fail(getUserRegistrationDate.Errors);
         }
 
         var registrationDate = getUserRegistrationDate.ValueOrDefault;
@@ -165,7 +165,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var getUserAuthorizationDate = UserAuthorizationDate.Create(_payload.AuthorizationDate);
         if (getUserAuthorizationDate.IsFailed)
         {
-            return getUserAuthorizationDate.ToResult();
+            return Result.Fail(getUserAuthorizationDate.Errors);
         }
 
         var authorizationDate = getUserAuthorizationDate.ValueOrDefault;
@@ -174,7 +174,7 @@ public class UserFactory : IEntityFactory<User, UserId>
         var getUserLoginResult = UserLogin.Create(_payload.Login ?? string.Empty);
         if (getUserLoginResult.IsFailed)
         {
-            return getUserLoginResult.ToResult();
+            return Result.Fail(getUserLoginResult.Errors);
         }
 
         var login = getUserLoginResult.ValueOrDefault;
@@ -188,7 +188,7 @@ public class UserFactory : IEntityFactory<User, UserId>
             var restoreVkUserResult = vkUserFactory.Restore();
             if (restoreVkUserResult.IsFailed)
             {
-                return restoreVkUserResult.ToResult();
+                return Result.Fail(restoreVkUserResult.Errors);
             }
 
             vkUser = restoreVkUserResult.ValueOrDefault;
@@ -203,7 +203,7 @@ public class UserFactory : IEntityFactory<User, UserId>
             var restoreRefreshTokenResult = refreshTokenFactory.Restore();
             if (restoreRefreshTokenResult.IsFailed)
             {
-                return restoreRefreshTokenResult.ToResult();
+                return Result.Fail(restoreRefreshTokenResult.Errors);
             }
 
             refreshTokens.Add(restoreRefreshTokenResult.ValueOrDefault);

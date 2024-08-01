@@ -4,8 +4,8 @@ using FluentMigrator.Postgres;
 
 namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Migrations;
 
-[Migration(2, @"Add vk_user_id column to users table.")]
-public class M000002_AddColumnVkUserIdToUsers : AutoReversingMigration
+[Migration(3, @"Add vk_user_id column to users table.")]
+public class M000003_AddColumnVkUserIdToUsers : AutoReversingMigration
 {
     public override void Up()
     {

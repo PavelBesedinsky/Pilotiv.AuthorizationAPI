@@ -4,6 +4,7 @@ using FluentResults;
 using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
 using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
+using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
 using Pilotiv.AuthorizationAPI.Infrastructure.Daos.Users;
@@ -18,14 +19,17 @@ namespace Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Repositories.Queri
 public class UsersQueriesRepository : IUsersQueriesRepository
 {
     private readonly DbContext _dbContext;
+    private readonly IPasswordProvider _passwordProvider;
 
     /// <summary>
     /// Создание репозитория запросов пользователей.
     /// </summary>
     /// <param name="dbContext">Контекст БД.</param>
-    public UsersQueriesRepository(DbContext dbContext)
+    /// <param name="passwordProvider">Сервис генерации и валидации паролей.</param>
+    public UsersQueriesRepository(DbContext dbContext, IPasswordProvider passwordProvider)
     {
         _dbContext = dbContext;
+        _passwordProvider = passwordProvider;
     }
 
     /// <inheritdoc />
@@ -65,7 +69,7 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     }
 
     /// <inheritdoc />
-    public async Task<Result<User>> GetUserByLoginPasswordAsync(UserLogin login, UserPasswordHash password)
+    public async Task<Result<User>> GetUserByLoginPasswordAsync(UserLogin login, string password)
     {
         var getUserResult = await GetUserByLoginAsync(login);
         if (getUserResult.IsFailed)
@@ -73,12 +77,14 @@ public class UsersQueriesRepository : IUsersQueriesRepository
             return getUserResult.ToResult();
         }
 
-        if (getUserResult.ValueOrDefault.PasswordHash is null)
+        var passwordHash = getUserResult.ValueOrDefault.PasswordHash;
+        if (passwordHash is null)
         {
             return UsersErrors.UserPasswordIsIncorrect(getUserResult.ValueOrDefault.Id);
         }
 
-        if (getUserResult.ValueOrDefault.PasswordHash != password)
+        var salt = Convert.FromHexString(passwordHash.Salt);
+        if (!_passwordProvider.ValidatePassword(password, passwordHash.Hash, salt))
         {
             return UsersErrors.UserPasswordIsIncorrect(getUserResult.ValueOrDefault.Id);
         }
@@ -208,7 +214,7 @@ public class UsersQueriesRepository : IUsersQueriesRepository
     /// <returns>Пользователь.</returns>
     private static Result<User> RestoreUserFromDao(UserDao userDao)
     {
-        var usersFabric = new UserFactory(GetUsersFactoryUserPayload(userDao));
+        UserFactory usersFabric = new(GetUsersFactoryUserPayload(userDao));
         return usersFabric.Restore();
     }
 
@@ -223,6 +229,7 @@ public class UsersQueriesRepository : IUsersQueriesRepository
         {
             Id = userDao.Id,
             PasswordHash = userDao.PasswordHash,
+            Salt = userDao.PasswordSalt,
             Email = userDao.Email,
             Login = userDao.Login,
             RegistrationDate = userDao.RegistrationDate,
