@@ -35,7 +35,7 @@ public class DbContext
     /// PostgreSQL Connection String.
     /// </summary>
     private string SqlConnection =>
-        $"Host={_dbSettingsOptions.Host};Port={_dbSettingsOptions.Port};Database={_dbSettingsOptions.Database}; Username={_dbSettingsOptions.UserId}; Password={_dbSettingsOptions.Password};";
+        $"Host={_dbSettingsOptions.Host};Port={_dbSettingsOptions.Port};Database={_dbSettingsOptions.Database};Username={_dbSettingsOptions.UserId};Password={_dbSettingsOptions.Password};";
     
     /// <summary>
     /// Создание соединения с БД.
