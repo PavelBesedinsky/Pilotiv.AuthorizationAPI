@@ -13,7 +13,7 @@ public class GenerateRefreshTokenTests
     [Fact]
     public void GenerateRefreshTokenTest()
     {
-        var jwtUtils = JwtUtilsFactory.Create("appsettings.test.both.json");
+        var jwtUtils = JwtProviderFactory.Create("appsettings.test.both.json");
         var refreshToken = jwtUtils.GenerateRefreshToken(new RefreshTokenConfiguration());
         Assert.NotNull(refreshToken);
         Assert.NotEmpty(refreshToken.Token);

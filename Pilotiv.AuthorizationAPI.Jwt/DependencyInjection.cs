@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Pilotiv.AuthorizationAPI.Jwt.Abstractions;
-using Pilotiv.AuthorizationAPI.Jwt.Certificates;
 using Pilotiv.AuthorizationAPI.Jwt.ConfigurationOptions;
+using Pilotiv.AuthorizationAPI.Jwt.Extensions;
 using Pilotiv.AuthorizationAPI.Jwt.Services;
 
 namespace Pilotiv.AuthorizationAPI.Jwt;
@@ -29,16 +28,17 @@ public static class DependencyInjection
         services.AddSingleton<IJwtProvider, JwtProvider>();
 
         // Подключение аутентификации на основе JWT.
-        var publicKey = configuration.GetSection(AuthenticationKeysOption.AuthenticationKeys)
-            .Get<AuthenticationKeysOption>()?.PublicKey;
+        var authenticationKeys = configuration.GetSection(AuthenticationKeysOption.AuthenticationKeys)
+            .Get<AuthenticationKeysOption>();
+        var publicKey = authenticationKeys?.PublicKey;
         if (string.IsNullOrWhiteSpace(publicKey))
         {
             throw new ArgumentException(nameof(AuthenticationKeysOption.PublicKey));
         }
 
-        var issuerSigningCertificate = new SigningIssuerCertificate();
-        var issuerSigningKey = issuerSigningCertificate.GetIssuerSingingKey(publicKey);
-
+        var issuer = authenticationKeys?.Issuer;
+        var audience = authenticationKeys?.Audience;
+        
         services
             .AddAuthentication(authOptions =>
             {
@@ -48,16 +48,12 @@ public static class DependencyInjection
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = issuerSigningKey,
-                    LifetimeValidator = Validators.LifetimeValidator
-                };
+                options.TokenValidationParameters = JwtProvider.GetTokenValidationParameters(publicKey, issuer, audience);
             });
-
+        services.AddAuthorization();
+        
+        services.AddAuthenticationKeysOption(configuration);
+        
         return builder;
     }
 }

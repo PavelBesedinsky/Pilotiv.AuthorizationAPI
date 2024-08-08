@@ -17,7 +17,7 @@ public class User : AggregateRoot<UserId, Guid>
     /// <summary>
     /// Хэш-пароля пользователя.
     /// </summary>
-    public UserPasswordHash? PasswordHash { get; }
+    public UserPassword? PasswordHash { get; }
 
     /// <summary>
     /// Адрес электронной почты пользователя.
@@ -60,7 +60,7 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="login">Логин.</param>
     /// <param name="vkUser">Пользователь VK.</param>
     /// <param name="refreshTokens">Токены обновления.</param>
-    private User(UserId id, UserPasswordHash? passwordHash, UserEmail email, UserRegistrationDate registrationDate,
+    private User(UserId id, UserPassword? passwordHash, UserEmail email, UserRegistrationDate registrationDate,
         UserAuthorizationDate authorizationDate, UserLogin? login, VkUser? vkUser,
         IEnumerable<RefreshToken> refreshTokens) : base(id)
     {
@@ -83,7 +83,7 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="login">Логин.</param>
     /// <param name="vkUser">Пользователь VK.</param>
     /// <param name="refreshTokens">Токены обновления.</param>
-    private User(UserPasswordHash? passwordHash, UserEmail email, UserRegistrationDate registrationDate,
+    private User(UserPassword? passwordHash, UserEmail email, UserRegistrationDate registrationDate,
         UserAuthorizationDate authorizationDate, UserLogin? login, VkUser? vkUser,
         IEnumerable<RefreshToken> refreshTokens) : this(UserId.Create(), passwordHash,
         email, registrationDate, authorizationDate, login, vkUser, refreshTokens)
@@ -99,7 +99,7 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="authorizationDate">Дата авторизации пользователя.</param>
     /// <param name="login">Логин пользователя.</param>
     /// <returns>Пользователь.</returns>
-    public static Result<User> Create(UserPasswordHash? userPasswordHash, UserEmail email,
+    public static Result<User> Create(UserPassword? userPasswordHash, UserEmail email,
         UserRegistrationDate registrationDate, UserAuthorizationDate authorizationDate, UserLogin? login)
     {
         var user = new User(userPasswordHash, email, registrationDate, authorizationDate, login, null,
@@ -134,7 +134,7 @@ public class User : AggregateRoot<UserId, Guid>
     /// <param name="vkUser">Пользователь VK.</param>
     /// <param name="refreshTokens">Токены обновления.</param>
     /// <returns>Пользователь.</returns>
-    public static Result<User> Restore(UserId userId, UserPasswordHash? userPasswordHash, UserEmail email,
+    public static Result<User> Restore(UserId userId, UserPassword? userPasswordHash, UserEmail email,
         UserRegistrationDate registrationDate, UserAuthorizationDate authorizationDate, UserLogin login, VkUser? vkUser,
         IEnumerable<RefreshToken> refreshTokens)
     {

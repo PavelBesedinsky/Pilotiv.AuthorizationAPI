@@ -1,4 +1,6 @@
-﻿namespace Pilotiv.AuthorizationAPI.Jwt.Entities;
+﻿using System;
+
+namespace Pilotiv.AuthorizationAPI.Jwt.Entities;
 
 /// <summary>
 /// Объект переноса данных настроек токена обновления.
@@ -6,10 +8,9 @@
 public class RefreshTokenConfiguration
 {
     /// <summary>
-    /// Количество часов, после истечения которых токен станет невалидным.
+    /// Дата и время, когда токен станет невалидным.
     /// </summary>
-    /// <remarks>По умолчанию 1 месяц = 720 часов.</remarks>
-    public int ExpiringHours { get; init; } = 720;
+    public DateTime Expires { get; init; }
 
     /// <summary>
     /// IP пользователя, который вызывает изменение токена.

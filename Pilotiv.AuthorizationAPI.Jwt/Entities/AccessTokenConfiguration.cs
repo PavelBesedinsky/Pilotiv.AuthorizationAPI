@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Pilotiv.AuthorizationAPI.Jwt.Entities;
 
@@ -8,14 +9,17 @@ namespace Pilotiv.AuthorizationAPI.Jwt.Entities;
 public class AccessTokenConfiguration
 {
     /// <summary>
-    /// Количество часов, через которое истекает токен.
+    /// Дата и время, раньше которого токен является невалидным.
     /// </summary>
-    /// <remarks>По умолчанию 7 дней = 168 часов.</remarks>
-    public int ExpiringHours { get; init; } = 168;
+    public DateTime NotBefore { get; init; }
 
     /// <summary>
-    /// Тело токена.
+    /// Дата и время, когда токен станет невалидным.
     /// </summary>
-    /// <remarks>Включает в себя Claims.</remarks>
-    public Dictionary<string, string> Payload { get; init; } = new();
+    public DateTime Expires { get; init; }
+
+    /// <summary>
+    /// Клеймы токены.
+    /// </summary>
+    public Dictionary<string, string> Claims { get; init; } = new();
 }

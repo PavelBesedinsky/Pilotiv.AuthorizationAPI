@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilotiv.AuthorizationAPI.Jw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilotiv.AuthorizationAPI.Jwt.Tests.Unit", "Pilotiv.AuthorizationAPI.Jwt.Tests.Unit\Pilotiv.AuthorizationAPI.Jwt.Tests.Unit.csproj", "{B1958245-A5A1-4C36-965D-EA447E7D7CFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pilotiv.AuthorizationAPI.Infrastructure.Migrator", "Pilotiv.AuthorizationAPI.Infrastructure.Migrator\Pilotiv.AuthorizationAPI.Infrastructure.Migrator.csproj", "{7FE94C1C-BF71-4ABA-B72F-5BF03AF2FAA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{B1958245-A5A1-4C36-965D-EA447E7D7CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1958245-A5A1-4C36-965D-EA447E7D7CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1958245-A5A1-4C36-965D-EA447E7D7CFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE94C1C-BF71-4ABA-B72F-5BF03AF2FAA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE94C1C-BF71-4ABA-B72F-5BF03AF2FAA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE94C1C-BF71-4ABA-B72F-5BF03AF2FAA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE94C1C-BF71-4ABA-B72F-5BF03AF2FAA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{67E4F920-AC1B-4846-87FD-4E9C8A1D1B81} = {9B2C8B40-8996-4B35-B8AC-7D2DDA2D6648}
@@ -60,5 +66,6 @@ Global
 		{3C1C89FF-69A1-447C-8415-A12960AD0F79} = {9B2C8B40-8996-4B35-B8AC-7D2DDA2D6648}
 		{5B5072ED-1810-455B-9F20-5323B0CD8235} = {9B2C8B40-8996-4B35-B8AC-7D2DDA2D6648}
 		{B1958245-A5A1-4C36-965D-EA447E7D7CFF} = {F9EEA9BB-0C5B-48EC-A9B6-752928B4E92C}
+		{7FE94C1C-BF71-4ABA-B72F-5BF03AF2FAA5} = {9B2C8B40-8996-4B35-B8AC-7D2DDA2D6648}
 	EndGlobalSection
 EndGlobal

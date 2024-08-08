@@ -16,6 +16,11 @@ public class UserDao
     public string? PasswordHash { get; set; }
 
     /// <summary>
+    /// Соль.
+    /// </summary>
+    public string? PasswordSalt { get; set; }
+    
+    /// <summary>
     /// Электронный адрес пользователя.
     /// </summary>
     public string Email { get; set; } = null!;

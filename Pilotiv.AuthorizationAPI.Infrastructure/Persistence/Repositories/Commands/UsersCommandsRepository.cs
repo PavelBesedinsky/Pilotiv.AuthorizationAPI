@@ -46,11 +46,11 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     }
 
     /// <summary>
-    /// Обработчик доменного события пользователя VK.
+    /// Обработчик событий пользователя VK.
     /// </summary>
-    /// <param name="connection">Соденинения.</param>
+    /// <param name="connection">Соденинение.</param>
     /// <param name="transaction">Транзакция.</param>
-    /// <param name="domainEvent">Доменное событие</param>
+    /// <param name="domainEvent">Доменное событие.</param>
     /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
     private static Task VkUserDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
         IDomainEvent domainEvent)
@@ -64,11 +64,11 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     }
 
     /// <summary>
-    /// Обработчик доменного события токена обновления.
+    /// Обработчик событий токена обновления.
     /// </summary>
-    /// <param name="connection">Соденинения.</param>
+    /// <param name="connection">Соденинение.</param>
     /// <param name="transaction">Транзакция.</param>
-    /// <param name="domainEvent">Доменное событие</param>
+    /// <param name="domainEvent">Доменное событие.</param>
     /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
     private static Task RefreshTokenDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
         IDomainEvent domainEvent)
@@ -88,11 +88,11 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     }
 
     /// <summary>
-    /// Обработчик доменного события пользователя.
+    /// Обработчик событий пользователя.
     /// </summary>
-    /// <param name="connection">Соденинения.</param>
+    /// <param name="connection">Соденинение.</param>
     /// <param name="transaction">Транзакция.</param>
-    /// <param name="domainEvent">Доменное событие</param>
+    /// <param name="domainEvent">Доменное событие.</param>
     /// <exception cref="ArgumentOutOfRangeException">Неизвестное доменное событие.</exception>
     private static Task UserDomainEventsHandlerAsync(IDbConnection connection, IDbTransaction transaction,
         IDomainEvent domainEvent)
@@ -133,8 +133,8 @@ public class UsersCommandsRepository : BaseCommandsRepository, IUsersCommandsRep
     private static Task OnUserPasswordHashChangedDomainEventAsync(UserPasswordHashChangedDomainEvent dEvent,
         IDbConnection connection, IDbTransaction transaction)
     {
-        const string sql = @"UPDATE users SET password_hash = @Password WHERE id = @Id";
-        return connection.ExecuteAsync(sql, new {Id = dEvent.UserId.Value, Password = dEvent.PasswordHash.Value},
+        const string sql = @"UPDATE users SET password_hash = @PasswordHash, password_salt = @PasswordSalt WHERE id = @Id";
+        return connection.ExecuteAsync(sql, new {Id = dEvent.UserId.Value, PasswordHash = dEvent.Password.Hash, PasswordSalt = dEvent.Password.Salt},
             transaction);
     }
 

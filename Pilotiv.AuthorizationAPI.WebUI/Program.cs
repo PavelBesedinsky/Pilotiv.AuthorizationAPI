@@ -1,7 +1,10 @@
 using System.Diagnostics;
+using System.IO;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Pilotiv.AuthorizationAPI.Application;
 using Pilotiv.AuthorizationAPI.Infrastructure;
-using Pilotiv.AuthorizationAPI.Infrastructure.Persistence.Extensions;
 using Pilotiv.AuthorizationAPI.Jwt;
 using Pilotiv.AuthorizationAPI.WebUI;
 using Pilotiv.AuthorizationAPI.WebUI.Extensions;
@@ -32,6 +35,4 @@ logger?.LogInformation("Environment: {EnvironmentName}", builder.Environment.Env
 
 app.ConfigureWebApplication();
 
-app
-    .MigrateDb(logger)
-    .Run();
+app.Run();

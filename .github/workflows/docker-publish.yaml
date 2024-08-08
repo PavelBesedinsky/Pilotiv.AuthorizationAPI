@@ -1,15 +1,12 @@
 ﻿name: Publish Docker Container
 on:
   push:
-    branches: [ master, develop ]
     tags:
       - '*'
-  pull_request:
-    branches: [ master, develop ]
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: auth.pilotiv:latest
+  IMAGE_NAME: auth.pilotiv:${{ github.REF_NAME }}
   REPOSITORY: pavelbesedinsky
   USERNAME: pavelbesedinsky
   

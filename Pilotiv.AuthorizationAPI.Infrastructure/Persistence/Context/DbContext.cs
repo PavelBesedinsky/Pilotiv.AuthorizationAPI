@@ -51,7 +51,7 @@ public class DbContext
     /// PostgreSQL Master Connection String.
     /// </summary>
     private string MasterSqlConnection =>
-        $"Host={_dbSettingsOptions.Host};Port={_dbSettingsOptions.Port};Database=postgres; Username={_dbSettingsOptions.UserId}; Password={_dbSettingsOptions.Password};";
+        $"Host={_dbSettingsOptions.Host};Port={_dbSettingsOptions.Port};Database={_dbSettingsOptions.DefaultDatabase}; Username={_dbSettingsOptions.UserId}; Password={_dbSettingsOptions.Password};";
 
     /// <summary>
     /// Создание соединения с БД.

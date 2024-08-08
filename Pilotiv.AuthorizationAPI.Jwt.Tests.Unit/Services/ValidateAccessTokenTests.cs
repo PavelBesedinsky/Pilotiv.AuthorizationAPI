@@ -22,7 +22,7 @@ public class ValidateAccessTokenTests
         Assert.NotNull(accessToken);
         Assert.NotEmpty(accessToken);
 
-        var jwtUtils = JwtUtilsFactory.Create("appsettings.test.pubkey.json");
+        var jwtUtils = JwtProviderFactory.Create("appsettings.test.pubkey.json");
         var result = jwtUtils.ValidateAccessToken(accessToken).ToList();
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -41,7 +41,7 @@ public class ValidateAccessTokenTests
         Assert.NotNull(accessToken);
         Assert.NotEmpty(accessToken);
 
-        var jwtUtils = JwtUtilsFactory.Create("appsettings.test.pubkey.json");
+        var jwtUtils = JwtProviderFactory.Create("appsettings.test.pubkey.json");
         var result = jwtUtils.ValidateAccessToken(accessToken);
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -59,7 +59,7 @@ public class ValidateAccessTokenTests
         Assert.NotNull(accessToken);
         Assert.NotEmpty(accessToken);
 
-        var jwtUtils = JwtUtilsFactory.Create("appsettings.test.fake_pubkey.json");
+        var jwtUtils = JwtProviderFactory.Create("appsettings.test.fake_pubkey.json");
         Assert.Throws<CryptographicException>(() => jwtUtils.ValidateAccessToken(accessToken));
 
         return Task.CompletedTask;
@@ -75,7 +75,7 @@ public class ValidateAccessTokenTests
         Assert.NotNull(accessToken);
         Assert.NotEmpty(accessToken);
 
-        var jwtUtils = JwtUtilsFactory.Create("appsettings.test.privatekey.json");
+        var jwtUtils = JwtProviderFactory.Create("appsettings.test.privatekey.json");
         Assert.Throws<ArgumentException>(() => jwtUtils.ValidateAccessToken(accessToken));
 
         return Task.CompletedTask;
@@ -85,14 +85,14 @@ public class ValidateAccessTokenTests
     /// Создание токена доступа.
     /// </summary>
     /// <returns>Токен доступа.</returns>
-    private string GenerateAccessToken(Dictionary<string, string> payload)
+    private static string GenerateAccessToken(Dictionary<string, string> claims)
     {
-        var jwtUtils = JwtUtilsFactory.Create("appsettings.test.privatekey.json");
+        var jwtUtils = JwtProviderFactory.Create("appsettings.test.privatekey.json");
 
         var accessToken = jwtUtils.GenerateAccessToken(new AccessTokenConfiguration
         {
-            ExpiringHours = 1,
-            Payload = payload
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            Claims = claims
         });
 
         return accessToken;

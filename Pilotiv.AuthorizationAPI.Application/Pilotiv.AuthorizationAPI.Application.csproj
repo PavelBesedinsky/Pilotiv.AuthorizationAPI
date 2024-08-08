@@ -37,14 +37,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Requests\Auth\" />
-        <Folder Include="Shared\Persistence\Repositories\" />
+      <Folder Include="Requests\Authorization\Commands\" />
+      <Folder Include="Requests\Registration\Commands\" />
+      <Folder Include="Requests\Tokens\" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="Pilotiv.Authentication">
-            <HintPath>Shared\Services\Pilotiv.Authentication\Pilotiv.Authentication.win.x64.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace Pilotiv.AuthorizationAPI.WebUI.Extensions;
+﻿using Microsoft.Extensions.Hosting;
+
+namespace Pilotiv.AuthorizationAPI.WebUI.Extensions;
 
 /// <summary>
 /// Расширения для <see cref="IHostEnvironment"/>.

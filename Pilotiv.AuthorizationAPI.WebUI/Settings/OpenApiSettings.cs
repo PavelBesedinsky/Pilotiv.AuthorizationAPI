@@ -1,4 +1,6 @@
-﻿using NSwag;
+﻿using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using NSwag;
 using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors.Security;
 using OpenApiContact = NSwag.OpenApiContact;

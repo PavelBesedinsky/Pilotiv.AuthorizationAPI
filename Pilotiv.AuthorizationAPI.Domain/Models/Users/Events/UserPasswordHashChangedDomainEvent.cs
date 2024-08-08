@@ -7,5 +7,5 @@ namespace Pilotiv.AuthorizationAPI.Domain.Models.Users.Events;
 /// Событие изменения хэша-пароля пользователя.
 /// </summary>
 /// <param name="UserId">Идентификатор пользователя.</param>
-/// <param name="PasswordHash">Хэш-пароля пользователя.</param>
-public record UserPasswordHashChangedDomainEvent(UserId UserId, UserPasswordHash PasswordHash) : IDomainEvent;
+/// <param name="Password">Хэш-пароля пользователя.</param>
+public record UserPasswordHashChangedDomainEvent(UserId UserId, UserPassword Password) : IDomainEvent;

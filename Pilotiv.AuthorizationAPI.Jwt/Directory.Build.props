@@ -1,0 +1,7 @@
+<Project>
+    <PropertyGroup>
+        <PackageId>Pilotiv.AuthorizationAPI.Jwt</PackageId>
+        <PackageProjectUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/PavelBesedinsky/Pilotiv.AuthorizationAPI?tab=Apache-2.0-1-ov-file#readme</PackageLicenseUrl>
+    </PropertyGroup>
+</Project>
