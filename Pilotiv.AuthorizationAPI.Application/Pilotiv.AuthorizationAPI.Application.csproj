@@ -35,4 +35,10 @@
             <DependentUpon>Resources.resx</DependentUpon>
         </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Requests\Authorization\Commands\" />
+      <Folder Include="Requests\Registration\Commands\" />
+      <Folder Include="Requests\Tokens\" />
+    </ItemGroup>
 </Project>
