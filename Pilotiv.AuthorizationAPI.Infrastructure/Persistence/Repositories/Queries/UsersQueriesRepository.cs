@@ -1,8 +1,8 @@
 ﻿using System.Data;
 using Dapper;
 using FluentResults;
-using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
-using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
+using Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users;
+using Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
 using Pilotiv.AuthorizationAPI.Application.Shared.Services;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;

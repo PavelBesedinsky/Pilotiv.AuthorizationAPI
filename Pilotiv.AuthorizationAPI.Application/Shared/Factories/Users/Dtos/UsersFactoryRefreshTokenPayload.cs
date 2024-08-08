@@ -1,4 +1,4 @@
-﻿namespace Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
+﻿namespace Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users.Dtos;
 
 /// <summary>
 /// Объект переноса данных информации о токене обновления для фабрики пользователей.

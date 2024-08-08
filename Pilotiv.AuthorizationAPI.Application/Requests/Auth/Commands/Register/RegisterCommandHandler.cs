@@ -1,8 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
 using Pilotiv.AuthorizationAPI.Application.Requests.Auth.Commands.Register.Errors;
-using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
-using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
+using Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users;
+using Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users.Dtos;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Commands;
 using Pilotiv.AuthorizationAPI.Application.Shared.Persistence.Repositories.Queries;
 using Pilotiv.AuthorizationAPI.Application.Shared.Services;

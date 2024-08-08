@@ -1,5 +1,5 @@
 ﻿using FluentResults;
-using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
+using Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users;
 using Pilotiv.AuthorizationAPI.Jwt.Abstractions;
 using Pilotiv.AuthorizationAPI.Jwt.Entities;

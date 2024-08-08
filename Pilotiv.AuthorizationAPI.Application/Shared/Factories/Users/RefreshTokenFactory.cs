@@ -1,9 +1,9 @@
 ﻿using FluentResults;
-using Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users.Dtos;
+using Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users.Dtos;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.Entities;
 using Pilotiv.AuthorizationAPI.Domain.Models.Users.ValueObjects;
 
-namespace Pilotiv.AuthorizationAPI.Application.Shared.Fabrics.Users;
+namespace Pilotiv.AuthorizationAPI.Application.Shared.Factories.Users;
 
 /// <summary>
 /// Фабрика токенов доступа.
